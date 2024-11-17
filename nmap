@@ -1,0 +1,2 @@
+nmap
+nmap -A -Pn -p- --min-rate 10000 <IP>
