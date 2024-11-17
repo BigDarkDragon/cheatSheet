@@ -1,2 +1,4 @@
 nmap
-nmap -A -Pn -p- --min-rate 10000 <IP>
+nmap -A -Pn -p- --min-rate 10000 <IP> //基本的なコマンド
+nmap -A -Pn -p 1-1000 -T 4 <IP> //１番から１０００番のとき　速度はT4でよい
+sudo nmap -A -sS //SYNスキャン　sudo
