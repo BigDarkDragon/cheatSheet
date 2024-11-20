@@ -1,0 +1,12 @@
+//gobuster
+gobuster dir -u <target IP> -w /usr/share/seclists/Dicovery/Web-Content/common.txt #ディレクトリモード（vhostにしたらサブドメイン）
+gobuster dns -d <domain name> -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -i #dnsモード
+-u #起点のURLを指定
+-w #ワードリスト
+-s #どのステータスコードが返ってきたらアクセスしたURLが存在すると判定
+-b #どのステータスコードが返ってきたらアクセスしたURLが存在しないと判定 -sを使ったら''が必須
+-x #検索するファイル拡張子を指定　-x 'php,txt,html'
+-e #見つかったURLの表示にベースのURLを含めて表示
+
+//隠しディレクトリ見つけたあと
+/etc/hostsに書き加えてアクセスする
