@@ -1,0 +1,23 @@
+//Webサーバ上で稼働するWebアプリやミドルウェアの脆弱性をスキャンする脆弱性ツール
+//コマンド
+nikto -h <target IP>
+
+nikto -h <target> -output <file path> #ファイルに出力
+nikto -h <target> -p <port> #ポートの指定
+nikto -Tuning <number> -h <target> #対象の脆弱性を指定
+1 interesting file
+2 misconfiguration
+3 information disclosure
+4 XSS/script/HTML
+5 RFI
+6 DoS
+7 Remote File Retrieval
+8 commando execution/remote shell
+9 SQLi
+0 File upload
+a Authentication Bypass
+b Software Identification
+c Remote Source Inclusion
+d WebService
+e Administrative Console
+x Reverse Tuning Options
