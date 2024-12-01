@@ -1,0 +1,35 @@
+//ハッシュアルゴリズムの特定
+hash-identifier #立ち上がったコンソールのHASH：にハッシュ値を入れる
+hashid <hash>　#コマンドの引数にハッシュ値を入れる
+
+//hashcat
+hashcat -m <アルゴリズム> <file name>
+
+-m 0 #MD5
+-m 10 #MD5(pass.salt)
+-m 20 #MD5(salt.pass)
+-m 100 #SHA1
+-m 1000 #NTLM
+-m 3200 #blowfish
+
+-a 0 #辞書
+-a 1 #辞書の組み合わせ
+-a 3 #ブルートフォース
+-a 6 #辞書＋マスク
+-a 7 #マスク＋辞書
+-a 9 #アソシエイト
+
+//john the ripper
+unshadow /etc/passwd /etc/shadow > hash.txt #ハッシュファイルの用意、パスとシャドウの順番は決まってる
+john <hash file> #基本
+john --wordlist=/usr/share/wordlists/rockyou.txt <hash file> #テキストを利用
+john --show <hash file> #解析済みのパスを見る
+
+--format=afs
+--format=crypt
+--format=des
+--format=md5
+--format=pdf
+--format=ssh
+
+
