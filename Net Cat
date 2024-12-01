@@ -1,0 +1,8 @@
+//基本の使い方
+nc -lvnp <port> #待ち受け側
+nc <IP> <port> #送信側
+
+//ファイルの受け渡し
+nc -lvnp <port> < example.txt #ファイル送信側
+nc <IP> <port> > example.txt #ファイル受信側
+
