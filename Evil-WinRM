@@ -1,0 +1,7 @@
+//windowsの認証情報でシェルが取れる
+
+//基本
+evil-winrm -i <domain name> -u <user name>
+
+//オプション
+-H <hash> #パスザハッシュ
