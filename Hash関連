@@ -3,7 +3,8 @@ hash-identifier #立ち上がったコンソールのHASH：にハッシュ値�
 hashid <hash>　#コマンドの引数にハッシュ値を入れる
 
 //hashcat
-hashcat -m <アルゴリズム> <file name>
+hashcat -m <アルゴリズム> <file name> #基本構文
+hashcat -h | grep "<アルゴリズム>" #ハッシュタイプの検索
 
 -m 0 #MD5
 -m 10 #MD5(pass.salt)
@@ -25,6 +26,7 @@ john <hash file> #基本
 john --wordlist=/usr/share/wordlists/rockyou.txt <hash file> #テキストを利用
 john --show <hash file> #解析済みのパスを見る
 zip2john <zip file name> > <hash name> #ZIPからハッシュを抽出
+
 --format=afs
 --format=crypt
 --format=des
