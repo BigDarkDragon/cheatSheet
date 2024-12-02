@@ -24,6 +24,7 @@ unshadow /etc/passwd /etc/shadow > hash.txt #ハッシュファイルの用意�
 john <hash file> #基本
 john --wordlist=/usr/share/wordlists/rockyou.txt <hash file> #テキストを利用
 john --show <hash file> #解析済みのパスを見る
+zip2john <zip file name> > <hash name> #ZIPからハッシュを抽出
 
 --format=afs
 --format=crypt
@@ -31,5 +32,5 @@ john --show <hash file> #解析済みのパスを見る
 --format=md5
 --format=pdf
 --format=ssh
-
+--format=zip
 
