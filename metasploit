@@ -1,1 +1,5 @@
+//exploitのサーチ
+searrch cve:xxxx-xxxxx
+search vsftpd 2.3.4
 
+//
