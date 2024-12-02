@@ -22,3 +22,15 @@ ps aux
 dpkg -l　# Debian
 rpm -qa (CentOS / openSUSE )　# CentOS, OpenSuse, Fedora, RHEL
 pkg_info　# OpenBSD, FreeBSD
+
+//ルートとして呼び出されたスクリプト
+find / -writable -type d 2>/dev/null
+find / -perm -222 -type d 2>/dev/null
+find / -perm -o w -type d 2>/dev/null
+
+find / -perm -o x -type d 2>/dev/null
+
+find / \( -perm -o w -perm -o x \) -type d 2>/dev/null
+
+//cronジョブ
+crontab -l #cronの列挙
