@@ -2,4 +2,9 @@
 searrch cve:xxxx-xxxxx
 search vsftpd 2.3.4
 
-//
+//待ち受け
+use exploit/multi/handrer
+
+//meterpreterで張替え
+use multi/manage/shell_to_meterpreter #最初のシェルをバックグラウンドにしてから
+run session=<num>
