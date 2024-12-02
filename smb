@@ -3,3 +3,7 @@ smbclient \\\\<IP>\\<share name>
 
 //共有フォルダの一覧表示
 smbclient -L <IP>
+
+//ファイルのダウンロード
+get <file name>
+
