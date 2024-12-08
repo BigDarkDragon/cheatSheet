@@ -3,8 +3,9 @@
 //ユーザ名やパスは''で囲ったほうがベター
 
 //基本
-evil-winrm -i <domain name> -u <user name>
+evil-winrm -i <domain name> -u <user name> 
 
 //オプション
 -H <hash> #パスザハッシュ
 -p <pass> #パスワードの使用
+-i <domain or IP> #ドメインでもIPでもいい
