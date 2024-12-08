@@ -1,1 +1,15 @@
+//crackmapexecとは
+特にAD環境のセキュリティ評価をするツール。リモートコードの実行、認証情報のスキャン、パスワードスプレー攻撃、権限昇格などが試せる
 
+//コマンド例
+crackmapexec <protcol> <IP> -d <domain name> -u <user name> -p <pass> --<option> #ドメイン名はなくてもIPだけで動きそう
+ユーザ名やパスは''で囲ったほうが無難
+
+//列挙
+crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --shares #共有フォルダの列挙
+crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --users #ユーザー名の列挙
+crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --rid-brute #RIDによるユーザの列挙
+crackmapexec smb <IP> --groups #グループ列挙
+
+//パスワードスプレー
+crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> #入手できたパスを利用する。ユーザ名はリストでも可。
