@@ -2,6 +2,8 @@
 find / -type f -perm -u=s 2>/dev/null　#suid
 find / -perm -g=s -type f 2>/dev/null　#guid
 
+//curl localhost:<port> --head #侵入したローカルで動いているサービス
+
 //カーネルバージョン
 uname -a
 cat /proc/version
