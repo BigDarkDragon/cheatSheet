@@ -5,5 +5,7 @@ smbclient \\\\<IP>\\<share name>
 smbclient -L <IP>
 
 //ファイルのダウンロード
-get <file name>
+get <file name> #スペースなどがある場合は""で囲う
+
+
 
