@@ -9,6 +9,9 @@ cmd /c dir /s *string*　#PSバージョン
 //ファイルタイプで指定
 dir /s *.txt
 
+//ファイルの所有者
+dir /q /a
+
 //すべてのユーザのファイルリスト
 cd C:\Users
 get-childitem *\*\*
