@@ -10,3 +10,6 @@ gobuster dns -d <domain name> -w /usr/share/seclists/Discovery/DNS/subdomains-to
 
 //隠しディレクトリ見つけたあと
 /etc/hostsに書き加えてアクセスする
+
+//エラーがでたとき
+--exclude-length <length>でエラーコードを無視してスキャンできるときもある
