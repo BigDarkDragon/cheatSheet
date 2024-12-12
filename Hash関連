@@ -38,3 +38,6 @@ zip2john <zip file name> > <hash name> #ZIPからハッシュを抽出
 //base64
 cat <base64> | base64 -d #コマンドで解読できる
 
+//gpp
+gpp-decrypt <hash> #ADなどで使われるGPP AESを復号
+
