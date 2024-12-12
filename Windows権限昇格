@@ -25,7 +25,7 @@ wmic qfe get Caption,Description,HotFixID,InstalledOn
 
 //systeminfoを活用したwindows exploit suggester python2で動かせ
 python2 windows-exploit-suggester.py --update #まずアップデート
- python2 windows-exploit-suggester.py --database 2014-06-06-mssb.xlsx --systeminfo <systeminfo.txt> #databaseは適宜更新される
+python2 windows-exploit-suggester.py --database 2014-06-06-mssb.xlsx --systeminfo <systeminfo.txt> #databaseは適宜更新される
 
 //脆弱なサービス
 for /f "tokens=2 delims='='" %a in ('wmic service list full^|find /i "pathname"^|find /i /v "system32"') do @echo %a >> c:\windows\temp\permissions.txt
