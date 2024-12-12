@@ -1,1 +1,14 @@
+//グラフ理論を使用し、AD環境内の関係性をあぶりだせる
+
+//インストール
+sudo apt install bloodhound
+sudo neo4j console
+ブラウザでhttp://localhost:7474にアクセス
+ユーザ名neo4j、初期パスneo4jでログイン
+ターミナルでbloodhoundコマンドで起動
+
+//sharphoundの配送
+/usr/share/bloodhound/resources/app/Collectors/SharpHound.exe
+/usr/share/matasploit-framework/data/post/SharpHound.exe
+uploads SharpHound.exe C:\Windows\system32 #meterpreterでシェルを張ってればこれで配送できる
 
