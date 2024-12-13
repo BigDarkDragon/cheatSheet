@@ -41,3 +41,6 @@ cat <base64> | base64 -d #コマンドで解読できる
 //gpp
 gpp-decrypt <hash> #ADなどで使われるGPP AESを復号
 
+//NTLMハッシュの作成
+iconv -f ASCII -t UTF-16LE <(printf "<pass>") | openssl dgst -md4　#入手したパスからハッシュを生成
+
