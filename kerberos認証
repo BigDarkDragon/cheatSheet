@@ -35,3 +35,13 @@ wget http://launchpadlibrarian.net/732112002/python3-cryptography_41.0.7-4ubuntu
 sudo dpkg -i python3-cryptography_41.0.7-4ubuntu0.1_amd64.deb
 wget http://launchpadlibrarian.net/715850281/python3-openssl_24.0.0-1_all.deb
 sudo dpkg -i python3-openssl_24.0.0-1_all.deb
+
+
+***メモ***
+【シルバーチケット攻撃】
+Silver Ticket は偽造された TGS (Ticket Granting Service) チケットで、DC を経由せずにクライアントとサービス間で直接使用されます。
+代わりに、TGS チケットはサービス アカウント自体によって署名されるため、Silver Ticket はサービス自体の認証のみに制限されます。
+シルバー チケットを作成するには、攻撃者は次のものが必要です。
+１：サービス アカウントのパスワードの NTLM ハッシュ。
+２：ドメインのSID
+３：アカウントに関連付けられたサービス プリンシパル名 (SPN)。
