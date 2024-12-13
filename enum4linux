@@ -9,3 +9,8 @@ enum4linux <option> <IP or domain>
 -M #マシン情報
 -P #パスワードポリシー
 -G #グループ情報
+
+//列挙したユーザ名をリスト化する
+cat user.txt | awk -F\[ '{print $2 }' | awk -F\] '{print $1 }'
+cat user.txt | awk -F\[ '{print $2 }' | awk -F\] '{print $1 }' > final_user.txt
+#user:[Administrator] rid:[0x1f4]この形式からユーザ名を抜き出せる
