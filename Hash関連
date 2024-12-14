@@ -26,6 +26,9 @@ john <hash file> #基本
 john --wordlist=/usr/share/wordlists/rockyou.txt <hash file> #テキストを利用
 john --show <hash file> #解析済みのパスを見る
 zip2john <zip file name> > <hash name> #ZIPからハッシュを抽出
+pfx2john <pfx file name> > <hash name> #pfxからハッシュを抽出
+openssl pkcs12 -in legacyy_dev_auth.pfx -nocerts -nodes -out private.key #pfxから秘密鍵を抽出
+openssl pkcs12 -in legacyy_dev_auth.pfx -clcerts -nokeys -out key.cer #pfxから証明書を抽出
 
 --format=afs
 --format=crypt
