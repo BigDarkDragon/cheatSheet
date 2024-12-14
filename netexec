@@ -1,0 +1,4 @@
+//crackmapexecと同様の能力を持つツール。パスワードの使い回しの発見やSMBの脆弱性発見、侵入プロトコルの特定などかなり広いことができる。
+
+//シェルを取れなくてもldap経由でbloodhoundを動かす
+netexec ldap <domain> -u <user> -p <pass> --bloodhound --collection All --dns-server <IP>
