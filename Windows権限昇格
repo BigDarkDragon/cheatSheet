@@ -17,12 +17,18 @@ dir -force #隠しフォルダも見れる
 cd C:\Users
 get-childitem *\*\*
 
+//ユーザの所属してるグループ
+net user <user>
+
 //ファイル内の検索
 findstr /s string * 2>nul
 
 //カーネル情報の列挙
 systeminfo
 wmic qfe get Caption,Description,HotFixID,InstalledOn
+
+//power shellの実行履歴
+C:\Users\legacyy\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine
 
 //systeminfoを活用したwindows exploit suggester python2で動かせ
 python2 windows-exploit-suggester.py --update #まずアップデート
