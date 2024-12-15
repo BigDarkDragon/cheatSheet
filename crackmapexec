@@ -12,4 +12,4 @@ crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --rid-brute #RID
 crackmapexec smb <IP> --groups #グループ列挙
 
 //パスワードスプレー
-crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> #入手できたパスを利用する。ユーザ名はリストでも可。
+crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> #入手できたパスを利用する。ユーザ名やパスはリストでも可。
