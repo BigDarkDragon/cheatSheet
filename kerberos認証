@@ -1,8 +1,8 @@
 //kerbrute
 ./kerbrute_linux_amd64 userenum -d spookysec.local --dc sppkysec.local user.txt #kerbruteはgitからダウンロード　
 -usernum #ユーザの列挙
--d # ドメイン名の指定
---dc #ドメコンの指定
+-d # ドメイン名の指定（○○○○.localみたいな）
+--dc #ドメコンの指定（IPアドレスでよい）
 
 //targetedKerberoast
 //例
