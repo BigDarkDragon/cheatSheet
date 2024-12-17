@@ -3,6 +3,8 @@
 -usernum #ユーザの列挙
 -d # ドメイン名の指定（○○○○.localみたいな）
 --dc #ドメコンの指定（IPアドレスでよい）
+#kerbruteで見つけたユーザ名からリストの作成
+grep -oP 'VALID USERNAME:\s+\K.*(?=@)' user.txt > outoput.txt
 
 //targetedKerberoast
 //例
