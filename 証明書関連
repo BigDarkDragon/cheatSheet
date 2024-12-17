@@ -1,0 +1,4 @@
+//ADを運用しているwindowsサーバの場合bloodhoundを使うが、Advice Directory Certificate Services (ADCS)も確認する
+
+//コマンド例
+certipy-ad find -dc-ip <IP> -ns <IP> -u <user>@<domani> -p '<pass>' -vulnerable -stdout
