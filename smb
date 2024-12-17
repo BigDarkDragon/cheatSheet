@@ -8,5 +8,13 @@ smbclient -L <IP>
 //ファイルのダウンロード
 get <file name> #スペースなどがある場合は""で囲う
 
+//SMB内のすべてを一括ダウンロード
+mask ""
+recurse ON
+prompt OFF
+mget *
+
+//ダウンロードしたなかからファイルを検索
+find /path/to/folder -type f
 
 
