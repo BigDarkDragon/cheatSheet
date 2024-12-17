@@ -16,4 +16,5 @@ impacket-secretsdump <domain>/<user>:<pass>@<IP> #ドメイン情報からパス
 impacket-psexec <domain>/<user>:<pass>@<IP> #impacket版psexec
 impacket-smbclient -k <domain>/<user>:<pass>@<dc name> -dc-ip <IP> #SMBに接続
 impacket-lookupsid <user>@10.129.253.69 -no-pass #SIDの列挙
-
+#impacketで見つけたユーザ名からリストの作成
+grep -oP '(?<=\\).*(?= \()' input.txt > output.txt
