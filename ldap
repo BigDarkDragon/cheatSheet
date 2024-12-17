@@ -1,0 +1,10 @@
+//ldapから情報を抜こう
+
+//全部とる
+ldapsearch -H ldap://<IP> -x -b "DC=example,DC=com" > ldap.txt
+#これで入手したデータでpwdなど文字検索すればパスがあるかも
+
+//ユーザ情報を利用していろいろな情報を取れる
+ldapdomaindump -u <domain>\\<user> -p <pass> <IP> -o <outoput file>
+#これで生成されたdomain_users_by_group.htmlはGUIでユーザ情報一覧を見れる
+
