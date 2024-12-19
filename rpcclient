@@ -2,5 +2,6 @@
 
 //ヌルセッションで接続
 rpcclient -U "" -N <IP>
-
+>querydominfo #ドメイン情報
+>getdompwinfo #パスワード設定情報
 
