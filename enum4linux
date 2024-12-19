@@ -14,3 +14,4 @@ enum4linux <option> <IP or domain>
 cat user.txt | awk -F\[ '{print $2 }' | awk -F\] '{print $1 }'
 cat user.txt | awk -F\[ '{print $2 }' | awk -F\] '{print $1 }' > final_user.txt
 #user:[Administrator] rid:[0x1f4]この形式からユーザ名を抜き出せる
+enum4linux -U <IP>  | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]" #ワンライナー
