@@ -5,6 +5,15 @@
 crackmapexec <protcol> <IP> -d <domain name> -u <user name> -p <pass> --<option> #ドメイン名はなくてもIPだけで動きそう
 ユーザ名やパスは''で囲ったほうが無難
 
+//対応サービス
+SMB	445
+WINRM	5985/5986
+MSSQL	1433
+LDAP	389
+SSH	22
+RDP	3389
+FTP	21
+
 //列挙
 crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --shares #共有フォルダの列挙
 crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --users #ユーザー名の列挙
