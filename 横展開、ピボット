@@ -1,0 +1,10 @@
+//chisel
+
+
+//meterpreter
+１台目のマシンとmeterpreterでセッションを確立したあとにbackgroundにして
+route add <ピボット先のNWアドレス> <session ID>
+use auxiliary/scanner/portscan/tcp #セッションを通じてスキャン
+
+//meterpreter portfwd
+materpreter > portfwd add -l <local port> -p <remote port> -r <target IP>
