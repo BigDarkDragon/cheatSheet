@@ -2,6 +2,9 @@
 /usr/share/windows-resources/binaries　#ここにwindowsに配送する用のツール類が入っている
 /usr/share/windows-resources/binaries/nc.exe　#windows用のNC
 
+//scpを使う
+ scp <file name> <user>@<ipAddressofTarget>:~/
+
 //pythonを使う
 python3 -m http.server <port> #送信側で簡易Webサーバを建てる（送りたいものがあるディレクトリで）
 
