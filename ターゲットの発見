@@ -4,3 +4,6 @@ fping -asgq <network addres>
 -s　スキャンの終了時に統計を印刷する
 -g　CIDR ネットワークからターゲットリストを生成する
 -q　ターゲットごとの結果を表示しない
+
+//ping sweep
+for i in {1..254}; do ping -c 1 -W 1 192.168.xxx.$i > /dev/null 2>&1 && echo "192.168.1.$i is alive"; done
