@@ -26,6 +26,7 @@ ssh -R <踏み台IP>:<踏み台IP>:0.0.0.0:8000 <踏み台ユーザ>@<target IP>
 １台目のマシンとmeterpreterでセッションを確立したあとにbackgroundにして
 route add <ピボット先のNWアドレス> <session ID>
 use auxiliary/scanner/portscan/tcp #セッションを通じてスキャン
+run autoroute -s <NW IP> #これでもルーティングできる。普通のターミナルからproxychainsを通じて通信できる
 
 //meterpreter portfwd
 materpreter > portfwd add -l <local port> -p <remote port> -r <target IP>
