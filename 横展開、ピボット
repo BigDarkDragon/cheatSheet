@@ -1,3 +1,13 @@
+//ネットワークの調査
+ipconfig
+ip a
+netstat -r
+
+//port fwd
+ssh -L <local port>:<local IP>:<remote port> <踏み台ユーザ>@<踏み台IP> #複数指定もできるよ
+
+ssh -D <local port> <踏み台ユーザ>@<踏み台IP> #ダイナミックポートフォワード　9050番がデフォルトで使用できる。/etc/proxychains.confにsocks4 127.0.0.1 <port>を書き足す
+
 //chisel
 
 
