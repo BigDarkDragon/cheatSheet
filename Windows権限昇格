@@ -30,9 +30,60 @@ wmic qfe get Caption,Description,HotFixID,InstalledOn
 //power shellの実行履歴
 C:\Users\legacyy\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine
 
-//systeminfoを活用したwindows exploit suggester python2で動かせ
-python2 windows-exploit-suggester.py --update #まずアップデート
-python2 windows-exploit-suggester.py --database 2014-06-06-mssb.xlsx --systeminfo <systeminfo.txt> #databaseは適宜更新される
+//power shellコマンド
+<列挙>
+hostname	#PCの名前を印刷します
+[System.Environment]::OSVersion.Version	#OSのバージョンとリビジョンレベルを出力します
+wmic qfe get Caption,Description,HotFixID,InstalledOn	#ホストに適用されたパッチとホットフィックスを印刷します
+ipconfig /all	#ネットワークアダプタの状態と構成を出力します
+set	#現在のセッションの環境変数のリストを表示します（CMDプロンプトから実行）
+echo %USERDOMAIN%	#ホストが属するドメイン名を表示します（CMDプロンプトから実行）
+echo %logonserver%	#ホストがチェックインするドメイン コントローラの名前を出力します (CMD プロンプトから実行)
+Get-ChildItem Env: | ft Key,Value	＃キーパス、ユーザー、コンピューター情報などの環境値
+Get-ExecutionPolicy -List	＃ホスト上の各スコープの実行ポリシー設定を出力
+powershell.exe -version 2 #バージョン２にダウングレード
+netsh advfirewall show allprofiles　＃ファイアウォールの状況
+Get-MpComputerStatus　＃AV設定のリビジョンと有効・無効の把握
+qwinsta #ログインしているほかのユーザ
+
+<ネットワーク関連>
+arp -a	arp ＃テーブルに保存されているすべての既知のホストを一覧表示します。
+ipconfig /all	＃ホストのアダプタ設定を出力します。ここからネットワーク セグメントを把握できます。
+route print	＃既知のネットワークとホストと共有されるレイヤー 3 ルートを識別するルーティング テーブル (IPv4 および IPv6) を表示します。
+netsh advfirewall show allprofiles	＃ホストのファイアウォールのステータスを表示
+
+<WMI>
+wmic qfe get Caption,Description,HotFixID,InstalledOn	#適用されたホットフィックスのパッチレベルと説明を印刷
+wmic computersystem get Name,Domain,Manufacturer,Model,Username,Roles /format:List	#リスト内の属性を含む基本的なホスト情報を表示
+wmic process list /format:list	#ホスト上のすべてのプロセスのリスト
+wmic ntdomain list /format:list	#ドメインとドメイン コントローラに関する情報を表示
+wmic useraccount list /format:list	#デバイスにログインしているすべてのローカルアカウントとドメインアカウントに関する情報を表示
+wmic group list /format:list	#すべてのローカルグループに関する情報
+wmic sysaccount list /format:list	#サービス アカウントとして使用されているシステムアカウントに関する情報をダンプ
+
+<netコマンド>　＊対象がコマンドを監視している場合はnet1を使うことで同じ機能をステルスで使える
+net accounts	#パスワード要件に関する情報
+net accounts /domain	#パスワードとロックアウトポリシー
+net group /domain	#ドメイングループに関する情報
+net group "Domain Admins" /domain	#ドメイン管理者権限を持つユーザーを一覧表示する
+net group "domain computers" /domain	#ドメインに接続されているPCのリスト
+net group "Domain Controllers" /domain	#ドメインコントローラのPCアカウントを一覧表示する
+net group <domain_group_name> /domain	#グループに属するユーザー
+net groups /domain	#ドメイングループのリスト
+net localgroup	#利用可能なすべてのグループ
+net localgroup administrators /domain	#ドメイン内の管理者グループに属するユーザーを一覧表示します (グループはDomain Adminsデフォルトでここに含まれます)
+net localgroup Administrators	#グループに関する情報（管理者）
+net localgroup administrators [username] /add	#ユーザーを管理者に追加する
+net share	#現在のシェアを確認する
+net user <ACCOUNT_NAME> /domain	#ドメイン内のユーザーに関する情報を取得する
+net user /domain	#ドメインのすべてのユーザーを一覧表示する
+net user %username%	#現在のユーザーに関する情報
+net use x: \computer\share	#共有をローカルにマウントする
+net view	#コンピュータのリストを取得する
+net view /all /domain[:domainname]	#ドメインのシェア
+net view \computer /ALL	#コンピュータの共有を一覧表示する
+net view /domain	#ドメインのPC一覧
+
 
 //脆弱なサービス
 for /f "tokens=2 delims='='" %a in ('wmic service list full^|find /i "pathname"^|find /i /v "system32"') do @echo %a >> c:\windows\temp\permissions.txt
@@ -43,6 +94,10 @@ wmic service get name,displayname,pathname,startmode |findstr /i "auto" |findstr
 
 //adminからsystem
 psexec -i -s cmd.exe
+
+//systeminfoを活用したwindows exploit suggester python2で動かせ
+python2 windows-exploit-suggester.py --update #まずアップデート
+python2 windows-exploit-suggester.py --database 2014-06-06-mssb.xlsx --systeminfo <systeminfo.txt> #databaseは適宜更新される
 
 //metasploitで使えそうなやつ
 use exploit/windows/local/service_permissions
