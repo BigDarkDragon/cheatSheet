@@ -1,0 +1,6 @@
+//NFSとはNFSは、ネットワーク上でファイルを共有するための分散ファイルシステムのプロトコル
+
+//対象のポートでNFSが動いていたら
+showmount -e <IP> #マウントされているファイルを探す
+mkdir /mnt/nfsshare #コピーするマウント用ディレクトリを作る
+mount -t nfs <IP>:/<mount name> /mnt/nfsshare #上記のディレクトリにマウントする　これで中身を見れる
