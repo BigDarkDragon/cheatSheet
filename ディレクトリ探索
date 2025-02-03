@@ -16,3 +16,6 @@ gobuster dns -d <domain name> -w /usr/share/seclists/Discovery/DNS/subdomains-to
 
 //ffuf
  ffuf -u <URL> -w <wordlist> -H "Host:FUZZ.example.com" -mc 200 #サブドメイン列挙
+
+//dirsearch
+dirsearch -u "<domain>" -t 50 #ディレクトリ探索
