@@ -12,6 +12,8 @@ hashcat -h | grep "<アルゴリズム>" #ハッシュタイプの検索
 -m 100 #SHA1
 -m 1000 #NTLM
 -m 3200 #blowfish
+-m 13100 #Kerberos 5 TGS-REP
+-m 18200 #Kerberos 5 AS-REP
 
 -a 0 #辞書
 -a 1 #辞書の組み合わせ
