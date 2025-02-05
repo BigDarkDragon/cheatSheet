@@ -12,6 +12,9 @@ sudo neo4j console
 /usr/share/matasploit-framework/data/post/SharpHound.exe
 uploads SharpHound.exe C:\Windows\system32 #meterpreterでシェルを張ってればこれで配送できる
 
+//sharphoundを配送せずに実行する
+bloodhound-python -u <user> -p '<pass>' -d <domain> -c All -dc dc01.example.local
+
 //シェルを取れなくてもldap経由でbloodhoundを動かす
 netexec ldap <domain> -u <user> -p <pass> --bloodhound --collection All --dns-server <IP>
 
