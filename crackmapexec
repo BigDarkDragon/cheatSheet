@@ -53,6 +53,9 @@ crackmapexec ldap <domain> -u <user> -p '<pass>' --gmsa #NTLMハッシュをGMSA
 //列挙（mssql）
 crackmapexec mssql <IP> -u <user> -p <pass> --local-auth #mssqlのユーザか確認する「Pwn3d!」が表示されたらDB管理者
 
+//コマンド実行
+-x <command>
+
 crackmapexec mssql <IP> -u <user> -p '<pass>' -q "SELECT name FROM master.dbo.sysdatabases" #mssqlのすべてのデータベース名を取得するSQLクエリ
 "SELECT table_name from core_app.INFORMATION_SCHEMA.TABLES" #テーブル名
 "SELECT * from [core_app].[dbo].tbl_users" #コンテンツ内容
@@ -93,6 +96,3 @@ crackmapexec mssql <IP> -u <user> -p <pass> -d . #-d .でローカルWindowsア�
 赤：ユーザー名またはパスワードが無効です。
 マゼンタ：ユーザー名とパスワードは有効ですが、認証は成功しません。
 STATUS_PASSWORD_MUST_CHANGEのステータスのアカウントはsmbpasswd -r <IP> -U <user>のコマンドで変更しよう
-
-//コマンド実行
--x <command>
