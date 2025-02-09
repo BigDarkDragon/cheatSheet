@@ -4,6 +4,10 @@ find / -perm -g=s -type f 2>/dev/null　#guid
 
 //curl localhost:<port> --head #侵入したローカルで動いているサービス
 
+//空いてるポート
+ss -pantu
+netstat -an
+
 //カーネルバージョン
 uname -a
 cat /proc/version
