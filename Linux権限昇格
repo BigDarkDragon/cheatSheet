@@ -9,6 +9,9 @@ uname -a
 cat /proc/version
 cat /etc/issue
 
+//環境変数の表示
+env
+
 //rootとして実行中のプログラム
 ps aux
 
