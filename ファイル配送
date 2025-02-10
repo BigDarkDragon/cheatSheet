@@ -19,6 +19,9 @@ wget --no-check-certificate http://<IP>:<port>/<file name> #wget httpsバージ�
 wget --http-user={username} --http-passwd={password} {url} #BASIC認証
 wget --post-data="userid=XXXXXXX&password=YYYYYYY" --no-check-certificate "https://accounts.google.com/servicelogin?hl=ja" # useridとpasswordフォームを送りつける場合
 
+//cmdからpowershellを利用
+powershell wget http://<IP>/example.exe -outfile example.exe
+
 -o ログファイル指定
 -w ウェイト
 -N タイムスタンプ保持
