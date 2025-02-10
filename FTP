@@ -1,0 +1,9 @@
+//２１番ポート
+
+//コマンド
+ftp <IP> #基本　anonymousが許可されていたらユーザ名anonymous、パスは空白でつなげる
+
+wget -r ftp://<user>:@<IP> #中のデータを全部ダウンロード
+
+ftp > epsv #モード切替
+ftp > passive #モード切替
