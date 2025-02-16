@@ -10,6 +10,7 @@ hashcat -h | grep "<アルゴリズム>" #ハッシュタイプの検索
 -m 10 #MD5(pass.salt)
 -m 20 #MD5(salt.pass)
 -m 100 #SHA1
+-m 500 #MD5crypt
 -m 1000 #NTLM
 -m 3200 #blowfish
 -m 13100 #Kerberos 5 TGS-REP
