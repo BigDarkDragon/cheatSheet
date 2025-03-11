@@ -1,5 +1,6 @@
 //基本構文
 smbclient \\\\<IP>\\<share name>
+smbclient //<IP>/<share> -U <user>%<pass>
 -U ユーザ名の指定
 
 //共有フォルダの一覧表示
