@@ -1,4 +1,4 @@
-//
+//linuxで使えるsmb管理のためのツール
 rpcclient <IP> -U <user>%<pass>
 
 //ヌルセッションで接続
