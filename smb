@@ -20,3 +20,6 @@ find /path/to/folder -type f
 
 //自分がＳＭＢサーバとなる
 impacket-smbserver share /tmp/share -smb2support #/tmp/shareはmkdirで作成してから。配送したいファイルをここに置いておく
+
+//smbにつないだままローカルコマンドを使う
+!ls -l #ローカルマシンでls
