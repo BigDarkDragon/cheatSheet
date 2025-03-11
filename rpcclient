@@ -1,7 +1,23 @@
 //
+rpcclient <IP> -U <user>%<pass>
 
 //ヌルセッションで接続
 rpcclient -U "" -N <IP>
 >querydominfo #ドメイン情報
 >getdompwinfo #パスワード設定情報
+
+//列挙
+enumdomusers #ドメインユーザの列挙
+srvinfo #IPアドレスとOSバージョン
+enumalsgroups domain #ドメインに関連付けられているグループを列挙
+enumalsgroups builtin #Microsoftによってあらかじめ定義されているグループ
+上の２つのalsgroupを合体させると端末上で定義されているすべてのグループ情報が完成
+lookupnames <user> #ユーザのsid、ridを表示
+lookupnames administrator
+queryuser 500 #sid500(admin)の詳細情報
+
+//Windows側
+Get-SmbSession #つながっているsmbセッションを確認
+Get-SmbSession | Close-SmbSession -Force #強制的にセッションを切る
+
 
