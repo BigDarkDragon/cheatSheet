@@ -3,7 +3,7 @@ hash-identifier #立ち上がったコンソールのHASH：にハッシュ値�
 hashid <hash>　#コマンドの引数にハッシュ値を入れる
 
 //hashcat
-hashcat -m <アルゴリズム> <file name> #基本構文
+hashcat -m <アルゴリズム> <file name> #基本構文（ハッシュタイプわからなかったらある程度自動で判定してくれる）
 hashcat -h | grep "<アルゴリズム>" #ハッシュタイプの検索
 
 -m 0 #MD5
