@@ -8,6 +8,7 @@ hashcat -h | grep "<アルゴリズム>" #ハッシュタイプの検索
 --quiet #無駄な出力を省く
 --username #テキストにユーザ名も含まれているよとhashcatに教える
 --identify #ハッシュの種類特定
+--rules /opt/hashcat/rules/best64.rule #文字をいろいろ組み替えるルールを適用する
 hashcat.potfile #クラック済みのハッシュはここに入ってる
 
 -m 0 #MD5
