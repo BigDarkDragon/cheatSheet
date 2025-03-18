@@ -1,0 +1,19 @@
+dig
+
+dig www.example.com （基本）
+dig +short www.example.com　（IPだけ出せる）
+dig +short AAAA www.example.com　（AAAAレコード（IPv6）を出せる）
+dig +short MX example.com　（MXレコードを指定）
+dig NS example.com　（権威DNSを照会できる）
+dig MX www.example.com　（この指定だとMXレコードの応答がないの下の指定をする）
+dig MX example.com　（これならMXレコードの応答がある）
+dig ANY www.example.com　（名前が一致するすべてのレコードが返ってくる）
+dig @172.30.0.254 A www.example.com　（IPで照会）
+dig +short AXFR example.com
+dig +short MX example.com
+
+//nmap script
+sudo nmap --dns-servers <dns IP> --script dns-brute --script-args dns-brute.domain=example.com
+※<dns IP>はローカルDNSサーバ、ターゲット組織のDNSサーバ、または別のDNSリゾルバ（GoogleのパブリックDNSリゾルバの8.8.8.8など）のいずれか
+
+sudo nmap --dns-servers <dns IP> --script dns-brute --script-args dns-brute.domain=example.com,dns-brute.hostlist=/path/to/wordlist.txt　（.txtを指定して利用）
