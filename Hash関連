@@ -17,6 +17,8 @@ hashcat.potfile #クラック済みのハッシュはここに入ってる
 -m 100 #SHA1
 -m 500 #MD5crypt
 -m 1000 #NTLM
+-m 1500 #DES
+-m 1800 #SHA512
 -m 3200 #blowfish
 -m 13100 #Kerberos 5 TGS-REP
 -m 18200 #Kerberos 5 AS-REP
