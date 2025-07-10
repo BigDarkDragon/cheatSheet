@@ -9,6 +9,9 @@ smbclient -L <IP>
 //ファイルのダウンロード
 get <file name> #スペースなどがある場合は""で囲う
 
+//データが大きすぎてダウンロードできないとき
+smbget -R -n "smb://<IP>/path/to/file"
+
 //SMB内のすべてを一括ダウンロード
 mask ""
 recurse ON
