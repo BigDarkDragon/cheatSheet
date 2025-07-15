@@ -15,3 +15,6 @@ nmap -sn <NW IP> #nmapでのpingスウィープ
 //meterpreter
 arpやipconfigでルーティング情報を確認
 run post/multi/gather/ping_sweep RHOSTS=<NW IP>
+
+//netdiscover
+sudo netdiscover -i 192.168.1.xx/24
