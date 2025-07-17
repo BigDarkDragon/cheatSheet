@@ -1,8 +1,112 @@
-//snmpwalk
-snmpwalk -c public -v1 <IP>
-snmpwalk -c public -v1 <IP> <OID> #情報窃取できるかも
+SNMP & snmpwalk Cheat Sheet
 
-| システム情報   | `1.3.6.1.2.1.1` (system)     | sysDescr, sysName 等
-| インタフェース  | `1.3.6.1.2.1.2` (interfaces) | ネットワークIF一覧
-| プリンタ MIB | `1.3.6.1.2.1.43`             | 用紙、状態などプリンタ固有。HackTricks 推奨でプリンタ情報からヒントを得られることあり
-| HP ベンダ全体 | `1.3.6.1.4.1.11`             | HP固有。上記パス漏えい OID含む
+1. インストール
+OS	パッケージ	コマンド例
+Debian/Ubuntu	snmp, snmp-mibs-downloader	sudo apt-get install snmp snmp-mibs-downloader
+RHEL/CentOS	net-snmp, net-snmp-utils	sudo yum install net-snmp net-snmp-utils
+macOS (Homebrew)	net-snmp	brew install net-snmp
+Windows	Net-SNMP バイナリ	https://www.net-snmp.org
+
+MIB シンボル名を表示したい（Deb系例）
+sudo apt-get install snmp-mibs-downloader
+/etc/snmp/snmp.conf の mibs : 行をコメントアウト／mibs +ALL を追加。
+
+2. コマンド早見表
+コマンド	主用途	最小例	備考
+snmpget	単一OIDを取得	snmpget -v1 -c public <IP> sysName.0	#点指定（複数OID列挙可）。
+snmpwalk	OID 以下を再帰列挙	snmpwalk -v2c -c public <IP> <OID>	#デバイス探索に便利。
+snmpbulkwalk	大量テーブル高速取得	snmpbulkwalk -v2c -c public <IP> <OID>	#v2c/v3 GETBULK対応。
+snmpgetnext	次 OID 1 つ取得	snmpgetnext -v2c -c public <IP> ifDescr	#手動トラバース検証。
+snmptranslate	OID ↔ シンボル変換	snmptranslate -On sysContact.0	#MIB調査に便利。
+
+3. snmpwalk 基本形 & 実践例
+snmpwalk [OPTIONS] <AGENT> [OID]
+#主なオプション
+`-v {1	2c	3}`
+-c <string>	-c public	v1/v2c コミュニティ
+-l <level>	-l authPriv	v3 セキュリティレベル (noAuthNoPriv / authNoPriv / authPriv)
+-u <user>	-u snmpuser	v3 ユーザ
+`-a <MD5	SHA>`	-a SHA
+-A <pass>	-A "AuthPass1"	v3 認証パス
+`-x <DES	AES>`	-x AES
+-X <pass>	-X "PrivPass1"	v3 暗号パス
+-On		OID を数値表示（MIB不要）
+-Os		短縮シンボリック表示
+-m ALL / -M +<dir>		MIB モジュール読み込み・パス追加
+-t <sec>	-t 5	タイムアウト秒
+-r <count>	-r 1	再試行回数
+
+3.1 標準情報列挙（system / interfaces）
+システム情報（sysDescr, sysName, …）:
+snmpwalk -v2c -c public 192.0.2.10 1.3.6.1.2.1.1
+
+インタフェース記述（ifDescr 列）:
+snmpwalk -v2c -c public 192.0.2.10 IF-MIB::ifDescr
+
+3.2 HP ベンダツリー（JetDirect / HTB Antique などプリンタ系）
+HP (PEN=11) 配下を全部歩く（数値 OID 指定推奨）:
+snmpwalk -v1 -c public -On <IP> 1.3.6.1.4.1.11
+
+JetDirect 系で歴史的にパスワードを保持していた OID（gdPasswords 相当）:
+snmpget  -v1 -c public -On 10.10.11.107 1.3.6.1.4.1.11.2.3.9.1.1.13.0
+返り値が BITS: / OCTET STRING: の 16進列ならASCII化
+
+4. OID 超入門（階層で読む）
+1.3.6.1.4.1.<PEN>...
+| | | | | |_____ Private Enterprise Number（企業ID）
+| | | | |_______ private (enterprise)
+| | | |_________ internet
+| | |___________ dod
+| |_____________ org
+|_______________ iso
+
+4.1 よく使う標準 OID
+名前	数値	内容
+sysDescr.0	1.3.6.1.2.1.1.1.0	OS / 製品説明文字列
+sysName.0	1.3.6.1.2.1.1.5.0	デバイス名（ホスト名）
+ifDescr	1.3.6.1.2.1.2.2.1.2	インタフェース名列
+ifOperStatus	1.3.6.1.2.1.2.2.1.8	up/down 状態
+hrSystem	1.3.6.1.2.1.25.1	Host-Resources: OS 系統情報
+hrStorage	1.3.6.1.2.1.25.2	ストレージ/メモリ情報
+
+4.2 PEN（Private Enterprise Number）例
+ベンダ	PEN	ルート OID
+Cisco	9	1.3.6.1.4.1.9
+Hewlett-Packard (HP)	11	1.3.6.1.4.1.11
+Microsoft	311	1.3.6.1.4.1.311
+Juniper	2636	1.3.6.1.4.1.2636
+
+5. SNMP 利用 Tips
+セキュリティ: 本番はできる限り SNMPv3 (authPriv)。v1/v2c コミュニティは平文＋推測されやすい（public / private）。
+
+大量テーブルは snmpbulkwalk: GETBULK でラウンドトリップ削減・高速化。
+
+タイムアウト調整: 遅い回線で落ちる場合 -t 5 -r 1 など調整。
+
+MIB 読み込みで可読性アップ: -m ALL -M +/usr/share/snmp/mibs。問題が出たら数値表示 -On。
+
+OID 不明なら総当たり: まずルートからざっくり → snmpwalk -On <host> 1 → grep で探す。
+
+アクセス権制限に注意: デバイスの View/ACL で見えるサブツリーが制限される。
+
+資格情報漏えいに警戒: 古いプリンタ/機器ではベンダ OID にパスが平文格納されることがある（HTB Antique の学習ポイント）。
+
+6. 便利ワンライナー集
+6.1 JetDirect BITS → ASCII（パス抽出例）
+snmpget -v1 -c public -On <ip> <oid> \
+  | sed 's/.*BITS: //' \
+  | tr ' ' '\n' \
+  | sed '/^$/d' \
+  | awk '{ if (length($1)==1) printf "%c", strtonum("0x0"$1); else printf "%c", strtonum("0x"$1); }'; echo
+OCTET STRING: で返る場合は sed 's/.*STRING: //' に変更。
+
+6.2 シンプル HEX → ASCII（16進を連結→復号）
+snmpget -v1 -c public -On <ip> <oid> | sed 's/.*BITS: //' | tr -d ' \n' | xxd -r -p
+6.3 IF OperStatus up/down 抽出
+snmpwalk -v2c -c public <ip> IF-MIB::ifOperStatus | grep -E 'INTEGER: (up|down)'
+6.4 SNMPv3 動作確認（認証・暗号なし）
+snmpwalk -v3 -l noAuthNoPriv -u testuser <ip> system
+6.5 SNMPv3 認証＋暗号（authPriv）例
+snmpwalk -v3 -l authPriv -u myuser -a SHA -A 'AuthPass1' -x AES -X 'PrivPass1' <ip> 1.3.6.1.2.1.1
+6.6 遅延回線・リトライ調整
+snmpwalk -v2c -c public -t 5 -r 1 <ip> 1.3.6.1.2.1
