@@ -1,2 +1,8 @@
 //snmpwalk
-snmpwalk -c public -v1 '<IP>'
+snmpwalk -c public -v1 <IP>
+snmpwalk -c public -v1 <IP> <OID> #情報窃取できるかも
+
+| システム情報   | `1.3.6.1.2.1.1` (system)     | sysDescr, sysName 等
+| インタフェース  | `1.3.6.1.2.1.2` (interfaces) | ネットワークIF一覧
+| プリンタ MIB | `1.3.6.1.2.1.43`             | 用紙、状態などプリンタ固有。HackTricks 推奨でプリンタ情報からヒントを得られることあり
+| HP ベンダ全体 | `1.3.6.1.4.1.11`             | HP固有。上記パス漏えい OID含む
