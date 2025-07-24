@@ -26,3 +26,6 @@ impacket-smbserver share /tmp/share -smb2support #/tmp/shareはmkdirで作成し
 
 //smbにつないだままローカルコマンドを使う
 !ls -l #ローカルマシンでls
+
+//metasploitでバージョン特定
+use auxiliary/scanner/smb/smb_version
