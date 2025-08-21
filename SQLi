@@ -1,3 +1,8 @@
+#mysql基本
+mysql -h <URL> -u <user> -p #普通のログイン
+mysql --skip-ssl -h <URL> -u <user> -p #TLS/SSLエラーがでたとき
+
+
 #基本構文
 select * from users;
 select username,password from users;
