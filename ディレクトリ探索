@@ -15,11 +15,12 @@ gobuster dns -d <domain name> -w /usr/share/seclists/Discovery/DNS/subdomains-to
 --exclude-length <length>でエラーコードを無視してスキャンできるときもある
 
 //ffuf
- ffuf -u <URL> -w <wordlist> -H "Host:FUZZ.example.com" -mc 200 #サブドメイン列挙
-ffuf -u https://FUZZ.example.com/ -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -v #サブドメイン列挙２
+ ffuf -u <URL> -w <wordlist> -H "Host: FUZZ.example.com" -fs <content size> #vhost列挙 -fsで除外するサイズは一度-fsなしでやって確かめる
+ ffuf -u https://FUZZ.example.com/ -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -v #サブドメイン列挙２
  ffuf -u http://<target IP>/FUZZ -w /usr/share/wordlists/dirb/big.txt -e .php -t 200 #拡張子を指定して探索
  ffuf -u http://TARGET/FUZZ -w <wordlist> -e .php -recursion -recursion-depth 3 -mc 200,204,301,302,307,401,403 -ac -v #再帰的に深さ３まで探索（-vはURLを表示）
-
+ ffuf -u http://example.com/example.php?FUZZ=key -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -fs <content size> #GETパラメータファジング
+ 
 
 //dirsearch
 dirsearch -u "<domain>" -t 50 #ディレクトリ探索
