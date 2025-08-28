@@ -1,6 +1,7 @@
 //ハッシュアルゴリズムの特定
 hash-identifier #立ち上がったコンソールのHASH：にハッシュ値を入れる
 hashid <hash>　#コマンドの引数にハッシュ値を入れる
+hashid -j <hash> #johnのフォーマットも一緒に表示してくれる
 
 //hashcat
 hashcat -m <アルゴリズム> <file name> <wordlist>#基本構文（ハッシュタイプわからなかったらある程度自動で判定してくれる）
@@ -10,6 +11,14 @@ hashcat -h | grep "<アルゴリズム>" #ハッシュタイプの検索
 --identify #ハッシュの種類特定
 --rules /opt/hashcat/rules/best64.rule #文字をいろいろ組み替えるルールを適用する
 hashcat.potfile #クラック済みのハッシュはここに入ってる
+hashcat --force word.txt -r custome.rule --stdout | sort -u > new_word.txt #ワードリストをルールに基づいて多様な組み合わせにする
+　ルールの書き方
+　:	何もしない
+　l	すべての文字を小文字にする
+　u	すべての文字を大文字にする
+　c	最初の文字を大文字にし、他は小文字にする
+　sXY	XのすべてのインスタンスをYに置き換えます
+　$!	最後に感嘆符を追加します
 
 -m 0 #MD5
 -m 10 #MD5(pass.salt)
@@ -33,6 +42,7 @@ hashcat.potfile #クラック済みのハッシュはここに入ってる
 //john the ripper
 unshadow /etc/passwd /etc/shadow > hash.txt #ハッシュファイルの用意、パスとシャドウの順番は決まってる
 john <hash file> #基本
+john --format=<hash形式> <hash> #フォーマットを指定して実行
 john --wordlist=/usr/share/wordlists/rockyou.txt <hash file> #テキストを利用
 john --show <hash file> #解析済みのパスを見る
 zip2john <zip file name> > <hash name> #ZIPからハッシュを抽出
@@ -57,3 +67,5 @@ gpp-decrypt <hash> #ADなどで使われるGPP AESを復号
 //NTLMハッシュの作成
 iconv -f ASCII -t UTF-16LE <(printf "<pass>") | openssl dgst -md4　#入手したパスからハッシュを生成
 
+//CeWLでパスワードリストの作成
+cewl https://www.example.com -d 4 -m 6 --lowercase -w wordlist.txt #-dは探索の深さ、-mは最小文字数
