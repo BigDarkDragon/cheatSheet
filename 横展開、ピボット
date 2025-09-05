@@ -28,6 +28,20 @@ route add <ピボット先のNWアドレス> <session ID>
 use auxiliary/scanner/portscan/tcp #セッションを通じてスキャン
 run autoroute -s <NW IP> #これでもルーティングできる。普通のターミナルからproxychainsを通じて通信できる
 
+<新しいバージョンのkaliでのautoroute>
+meterpreter > use post/multi/manage/autoroute
+meterpreter > set SESSION 1   # セッション番号を指定
+meterpreter > set SUBNET 192.168.x.x
+meterpreter > set NETMASK 255.255.255.0
+meterpreter > run
+
+msf6 > use auxiliary/server/socks_proxy   # 旧: socks4a。socks_proxy は v5 可
+msf6 auxiliary(server/socks_proxy) > set SRVHOST 127.0.0.1
+msf6 auxiliary(server/socks_proxy) > set SRVPORT 1080
+msf6 auxiliary(server/socks_proxy) > set VERSION 5  # 4a でもOK
+msf6 auxiliary(server/socks_proxy) > run #この後proxychainsでコマンド可能
+
+
 //meterpreter portfwd
 meterpreter > portfwd add -l <local port> -p <remote port> -r <target IP> #ローカル
 
