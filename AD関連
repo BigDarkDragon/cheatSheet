@@ -10,3 +10,102 @@ Get-ADGroupMember -Identity "Backup Operators"
 
 //Snaffler (Active Directory 環境で資格情報やその他の機密データを取得するのに役立つツール)
 .\Snaffler.exe  -d <domain> -s -v data
+
+
+//ツールたち
+* **PowerView / SharpView**
+AD内の状況認識を得るために使用されるPowerShellツール、およびその.NET移植版です。これらは様々なWindowsの `net*` コマンドなどの代替として使用できます。PowerViewとSharpViewは、BloodHoundが行うようなデータ収集の多くを実行できますが、すべてのデータポイント間で意味のある関係性を構築するには手作業が必要です。新しい認証情報を入手した際にどのような追加アクセス権があるかを確認したり、特定のユーザーやコンピュータをターゲットにしたり、KerberoastingやASREPRoastingで攻撃可能なユーザーといった「手っ取り早い成果（Quick Wins）」を見つけるのに最適です。
+* **BloodHound**
+ADの関係性を視覚的にマッピングし、他の方法では気づかないような攻撃パスを計画するのに役立ちます。`SharpHound`（PowerShellまたはC#製インジェスタ）を使用してデータを収集し、その後BloodHound JavaScript (Electron) アプリケーションにインポートします。バックエンドにはグラフ解析用に `Neo4j` データベースを使用します。
+* **SharpHound**
+ユーザー、グループ、コンピュータ、ACL、GPO、ユーザー/コンピュータ属性、ユーザーセッションなど、ADオブジェクトに関する情報をActive Directoryから収集するためのC#製データコレクタです。このツールはJSONファイルを生成し、それをBloodHoundのGUIツールに取り込んで分析します。
+* **BloodHound.py**
+`Impacket` ツールキットをベースにしたPython製のBloodHoundインジェスタです。BloodHoundの収集方法のほとんどをサポートしており、ドメインに参加していない攻撃ホストから実行できます。出力結果はBloodHound GUIに取り込んで分析可能です。
+* **Kerbrute**
+Go言語で書かれたツールで、Kerberos事前認証（Pre-Authentication）を使用して、Active Directoryアカウントの列挙、パスワードスプレー、ブルートフォース攻撃を行います。
+* **Impacket toolkit**
+ネットワークプロトコルと対話するためにPythonで書かれたツールコレクションです。このスイートには、Active Directoryの列挙や攻撃を行うための様々なスクリプトが含まれています。
+* **Responder**
+LLMNR、NBT-NS、MDNSをポイズニング（汚染）するための専用ツールで、多くの機能を備えています。
+* **Inveigh.ps1**
+Responderと同様に、様々なネットワークスプーフィングやポイズニング攻撃を行うためのPowerShellツールです。
+* **C# Inveigh (InveighZero)**
+InveighのC#バージョンです。取得したデータ（ユーザー名やパスワードハッシュなど）と対話するための、半対話型コンソールを備えています。
+* **rpcinfo**
+リモートホスト上のRPCプログラムのステータスを照会したり、利用可能なRPCサービスの一覧を列挙したりするために使用されるユーティリティです。`-p` オプションでターゲットホストを指定します。例えば `rpcinfo -p 10.0.0.1` というコマンドは、リモートホストで利用可能なすべてのRPCサービスを、プログラム番号、バージョン番号、プロトコルとともに返します。なお、このコマンドの実行には十分な権限が必要です。
+* **rpcclient**
+Linuxディストリビューション上のSambaスイートの一部で、リモートRPCサービスを通じて様々なActive Directory列挙タスクを実行するために使用できます。
+* **CrackMapExec (CME)**
+列挙、攻撃、ポストエクスプロイテーション（攻撃後の活動）を行うツールキットです。収集したデータを使って列挙や攻撃を行う際に大いに役立ちます。CMEは「環境寄生型（live off the land）」のアプローチを取り、SMB、WMI、WinRM、MSSQLなどの組み込みAD機能やプロトコルを悪用しようとします。
+* **Rubeus**
+Kerberosの悪用（Abuse）を目的に構築されたC#ツールです。
+* **GetUserSPNs.py**
+通常ユーザーに紐づいているサービスプリンシパル名（SPN）を見つけることに特化した、もう一つのImpacketモジュールです。
+* **Hashcat**
+強力なハッシュクラッキングおよびパスワードリカバリツールです。
+* **enum4linux**
+WindowsおよびSambaシステムから情報を列挙するためのツールです。
+* **enum4linux-ng**
+オリジナルのEnum4linuxを作り直したもので、動作が少し異なります。
+* **ldapsearch**
+LDAPプロトコルと対話するための組み込みインターフェースです。
+* **windapsearch**
+LDAPクエリを使用してADユーザー、グループ、コンピュータを列挙するPythonスクリプトです。カスタムLDAPクエリを自動化するのに便利です。
+* **DomainPasswordSpray.ps1**
+ドメインユーザーに対してパスワードスプレー攻撃を行うためにPowerShellで書かれたツールです。
+* **LAPSToolkit**
+PowerViewを活用して、MicrosoftのLAPS（Local Administrator Password Solution）を導入しているActive Directory環境を監査および攻撃するためのPowerShell関数群です。
+* **smbmap**
+ドメイン全体のSMB共有を列挙します。
+* **psexec.py**
+Impacketツールキットの一部で、半対話型シェルの形でPsexecのような機能を提供します。
+* **wmiexec.py**
+Impacketツールキットの一部で、WMI経由でのコマンド実行機能を提供します。
+* **Snaffler**
+アクセス可能なファイル共有を持つコンピュータ上のActive Directory内の情報（認証情報など）を見つけるのに役立ちます。
+* **smbserver.py**
+Windowsホストとやり取りするための簡易的なSMBサーバーを実行します。ネットワーク内でファイルを転送する簡単な方法です。
+* **setspn.exe**
+Active Directoryサービスアカウントのサービスプリンシパル名（SPN）ディレクトリプロパティを追加、読み取り、変更、削除します。
+* **Mimikatz**
+多くの機能を実行します。特に、Pass-the-Hash攻撃、平文パスワードの抽出、ホスト上のメモリからのKerberosチケット抽出などが有名です。
+* **secretsdump.py**
+ホストからSAMおよびLSAシークレットをリモートでダンプします。
+* **evil-winrm**
+WinRMプロトコル経由でホスト上の対話型シェルを提供します。
+* **mssqlclient.py**
+Impacketツールキットの一部で、MSSQLデータベースと対話する機能を提供します。
+* **noPac.py**
+CVE-2021-42278およびCVE-2021-42287を使用したエクスプロイトの組み合わせで、標準的なドメインユーザーからドメイン管理者（DA）になりすまします。
+* **rpcdump.py**
+Impacketツールセットの一部で、RPCエンドポイントマッパーです。
+* **CVE-2021-1675.py**
+PrintNightmareのPython版PoC（概念実証コード）です。
+* **ntlmrelayx.py**
+Impacketツールセットの一部で、SMBリレー攻撃を実行します。
+* **PetitPotam.py**
+CVE-2021-36942のPoCツールで、MS-EFSRPCの `EfsRpcOpenFileRaw` やその他の関数を通じて、Windowsホストに他のマシンへの認証を強制させます。
+* **gettgtpkinit.py**
+証明書とTGT（Ticket Granting Ticket）を操作するためのツールです。
+* **getnthash.py**
+このツールは既存のTGTを使用し、U2U（User-to-User）を使って現在のユーザーのPAC（Privilege Attribute Certificate）を要求します。
+* **adidnsdump**
+ドメインからDNSレコードを列挙してダンプするツールです。DNSゾーン転送の実行に似ています。
+* **gpp-decrypt**
+グループポリシー基本設定（Group Policy Preferences）ファイルからユーザー名とパスワードを抽出します。
+* **GetNPUsers.py**
+Impacketツールキットの一部です。ASREPRoasting攻撃を実行し、「Kerberos事前認証を必要としない（Do not require Kerberos preauthentication）」設定がされたユーザーのAS-REPハッシュをリストアップ・取得するために使用されます。これらのハッシュは、その後Hashcatなどのツールに渡され、オフラインでのパスワードクラッキングが試行されます。
+* **lookupsid.py**
+SID（セキュリティ識別子）のブルートフォースツールです。
+* **ticketer.py**
+TGT/TGSチケットの作成とカスタマイズを行うツールです。ゴールデンチケットの作成や、子ドメインから親ドメインへの信頼（Trust）攻撃などに使用できます。
+* **raiseChild.py**
+Impacketツールキットの一部で、子ドメインから親ドメインへの権限昇格を自動化するツールです。
+* **Active Directory Explorer**
+Active Directory Explorer (AD Explorer) は、ADのビューアおよびエディタです。ADデータベースをナビゲートし、オブジェクトのプロパティや属性を表示するために使用できます。また、ADデータベースのスナップショットを保存してオフライン分析することも可能です。ADスナップショットをロードすると、データベースのライブバージョンのように探索できます。さらに、2つのADデータベーススナップショットを比較して、オブジェクト、属性、セキュリティ権限の変更点を確認することもできます。
+* **PingCastle**
+リスク評価と成熟度フレームワーク（ADセキュリティ向けに適合されたCMMIに基づく）に基づいて、AD環境のセキュリティレベルを監査するために使用されます。
+* **Group3r**
+ADのグループポリシーオブジェクト（GPO）におけるセキュリティ設定ミスを監査・発見するのに役立ちます。
+* **ADRecon**
+ターゲットのAD環境から様々なデータを抽出するために使用されるツールです。データはMicrosoft Excel形式で出力され、分析を支援するサマリービューや分析機能が含まれており、環境全体のセキュリティ状態を把握するのに役立ちます。
