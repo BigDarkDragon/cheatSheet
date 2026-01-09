@@ -1,0 +1,10 @@
+//windows defender
+Get-Command -Module Defender
+Get-MpComputerStatus　#コンピューター上のマルウェア対策ソフトウェア（Microsoft Defender Antivirusを含む）のステータス詳細を取得するために使用できます
+Get-MpThreat #コンピューター上で検出された脅威の履歴を確認できます
+Get-MpThreatDetection -ThreatID *******  #ユーザーがコンピューター上の脅威検出履歴を表示できるようにします
+Set-MpPreference -DisableRealTimeMonitoring $true #リアルタイム保護を有効/無効にできる
+
+Import-Module C:\Tools\ExpandDefenderSig\ExpandDefenderSig.ps1 #DefenderのVDMファイルを展開する
+ls "C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{50326593-AC5A-4EB5-A3F0-047A75D1470C}\mpavbase.vdm" | Expand-DefenderAVSignatureDB -OutputFileName mpavbase.raw #生バイナリに変換
+C:\Tools\Strings\strings64.exe .\mpavbase.raw | Select-String -Pattern "WNcry@2ol7" #静的解析用の文字列を探す（この例はwannacry）
