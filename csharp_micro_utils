@@ -1,3 +1,4 @@
+//kaliでコンパイルするときのコマンド： mcs -r:System.Configuration.Install.dll -platform:x64 -optimize -unsafe -out:csharp.exe csharp_micro_utils.cs
 //C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=false /U <YOUR FILE> でinstallutilの引数として実行する
 
 using System;
