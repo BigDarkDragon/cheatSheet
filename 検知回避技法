@@ -45,5 +45,23 @@ Add-MpPreference -ExclusionPath "C:\Temp\Tools"
 # ヘルプの表示（オプション確認用）
 .\ThreatCheck.exe --help
 
+//AppLocker
+```標準ユーザが実行できるフォルダを列挙する
+Get-ChildItem $env:windir -Directory -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
+    $dir = $_;
+    (Get-Acl $dir.FullName).Access | ForEach-Object {
+        if ($_.AccessControlType -eq "Allow") {
+            if ($_.IdentityReference.Value -eq "NT AUTHORITY\Authenticated Users" -or $_.IdentityReference.Value -eq "BUILTIN\Users") {
+                if (($_.FileSystemRights -like "*Write*" -or $_.FileSystemRights -like "*Create*") -and $_.FileSystemRights -like "*Execute*") {
+                    Write-Host ($dir.FullName + ": " + $_.IdentityReference.Value + " (" + $_.FileSystemRights + ")");
+                }
+            }
+        }
+    };
+}
+```
+
+
+
 //C#のコンパイル方法
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /out:example.exe example.cs #CMDでやる版
