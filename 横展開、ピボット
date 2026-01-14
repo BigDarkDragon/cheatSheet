@@ -10,7 +10,8 @@ ssh -D <local port> <踏み台ユーザ>@<踏み台IP> #ダイナミックポー
 proxychains <command> #ダイナミックポートフォワードしたあとにproxychain経由でコマンドを実行する
 
 //chisel(HTTPを使用してデータ転送をする）/etc/proxychains.confを確認してsocks5に割り当てられているポートを確認する
-git clone https://github.com/jpillora/chisel.git
+wget https://github.com/jpillora/chisel/releases/download/v1.11.3/chisel_1.11.3_linux_amd64.gz
+gunzip chisel_1.11.3_linux_amd64.gz
 scp chisel <user name>@<pivot IP>:~/ #pivotホストにchiselを配送する
 
 ./chisel server -v -p <port> --socks5 #pivotホスト上でサーバを起動（バインド）
