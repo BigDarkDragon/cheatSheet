@@ -9,8 +9,15 @@ ssh -L <local port>:<remote IP>:<remote port> <踏み台ユーザ>@<踏み台IP>
 ssh -D <local port> <踏み台ユーザ>@<踏み台IP> #ダイナミックポートフォワード　9050番がデフォルトで使用できる。/etc/proxychains.confにsocks4 127.0.0.1 <port>を書き足す
 proxychains <command> #ダイナミックポートフォワードしたあとにproxychain経由でコマンドを実行する
 
-//chisel
+//chisel(HTTPを使用してデータ転送をする）/etc/proxychains.confを確認してsocks5に割り当てられているポートを確認する
+git clone https://github.com/jpillora/chisel.git
+scp chisel <user name>@<pivot IP>:~/ #pivotホストにchiselを配送する
 
+./chisel server -v -p <port> --socks5 #pivotホスト上でサーバを起動（バインド）
+./chisel client -v <pivot IP>:<port> socks #kaliからpivotホストへ接続（バインド）
+
+sudo ./chisel server --reverse -v -p <port> --socks5 #kaliでサーバを起動（リバース）
+./chisel client -v <kali IP>:<port> R:socks #pivotホストからkaliへ接続（リバース）
 
 //meterpreter
 <踏み台を経由したmeterpreterセッションの確立の流れ>
