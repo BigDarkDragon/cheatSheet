@@ -174,11 +174,9 @@ OPC A&E は、警報やイベントを管理する仕様です。
 └─────────────────────────────────────────────────────┘
 ```
 
-> **出典**: 本田俊明博士論文（本ワークスペース『翻訳_Honda.md』）図2.4〜2.8 参照。
-
 ### OPC UA のセキュリティ
 
-本田博士論文および OPC UA 仕様によれば、OPC UA のセキュリティは PKI（公開鍵基盤）と共通鍵暗号のハイブリッド方式を採用しています。
+OPC UA 仕様によれば、OPC UA のセキュリティは PKI（公開鍵基盤）と共通鍵暗号のハイブリッド方式を採用しています。
 
 | セキュリティ機能 | 説明 |
 |---|---|
@@ -190,8 +188,6 @@ OPC A&E は、警報やイベントを管理する仕様です。
 | **否認防止（Non-Repudiation）** | 証拠の保全 |
 
 **想定脅威:** DoS、メッセージ偽装、盗聴、メッセージ改ざん、メッセージ再送、不正形式メッセージ、サーバプロファイリング、システム乗っ取り、偽サーバ、資格情報侵害、否認/証拠破壊
-
-> **出典**: 本田博士論文 p.33–35、図2.11
 
 ---
 
@@ -228,8 +224,6 @@ OPC A&E は、警報やイベントを管理する仕様です。
 - **通信の暗号化**: OPC UA の SecurityMode を適切に設定
 - **認証**: ユーザ認証・アプリケーション認証の実装
 - **DMZ の設置**: IT 層と OT 層の間にデータ中継層を配置
-
-> **出典**: 本田博士論文 p.22（石油プラントでの DMZ 構成に Cogent DataHub を使用した事例）、IEC 62443-3-1/3-2
 
 ---
 
@@ -1320,22 +1314,6 @@ netsh advfirewall firewall add rule name="SQLServer" dir=in action=allow protoco
 | **SCL** | エスシーエル | Substation Configuration Language。IEC 61850 の構成記述言語 |
 | **Purdue モデル** | パデューモデル | 産業制御システムの階層参照モデル |
 
-## B. 参考文献・資料
-
-### ワークスペース内の参考資料
-
-| # | 資料名 | 概要 |
-|---|---|---|
-| 1 | 本田俊明 博士論文「産業用制御システムと OPC UA」 | OPC UA の暗号化通信監視と不適切コマンド検知に関する研究。OPC UA セキュリティの詳細な技術解説を含む |
-| 2 | 『OPC Unified Architecture』(Mahnke 他) | OPC UA の設計思想・アーキテクチャ・情報モデリング・セキュリティを包括的に解説する教科書 |
-| 3 | 「調査報告_OPC-Classicとは」 | OPC Classic/DA (DCOM) の技術・セキュリティ・運用リスク分析。DCOM の弱点と移行阻害要因を詳説 |
-| 4 | DataHub ユーザマニュアル (Skkynet社) | Cogent DataHub の設定・運用ガイド |
-| 5 | Yokogawa OPC UA Server ユーザーズマニュアル | 横河電機の OPC UA サーバ実装ガイド |
-| 6 | IEC 62443 関連資料群 | 産業制御システムセキュリティの国際標準解説 |
-| 7 | NIST SP 800-82r3 | ICS セキュリティガイドライン |
-| 8 | VDMA 40000 ドラフト | OPC UA for Machinery ホワイトペーパー |
-| 9 | OPC UA 移行論文群 | Classic → UA 移行の事例・ロードマップ論文 |
-| 10 | 「OPC UA のセキュリティ対策と証明書の運用」(OPC協会) | OPC UA 証明書管理の実務ガイド |
 
 ### 外部参考資料
 
@@ -1347,11 +1325,3 @@ netsh advfirewall firewall add rule name="SQLServer" dir=in action=allow protoco
 | 4 | Microsoft KB5004442 (DCOM Hardening) | https://support.microsoft.com/en-us/topic/kb5004442 |
 | 5 | IANA OPC UA ポート登録 | https://www.iana.org/assignments/service-names-port-numbers/ |
 | 6 | BSI OPC UA セキュリティ分析 | https://www.bsi.bund.de/ |
-
----
-
-> **改訂履歴**
->
-> | 版数 | 日付 | 内容 |
-> |---|---|---|
-> | 第1版 | 2026-07-11 | 初版作成 |
