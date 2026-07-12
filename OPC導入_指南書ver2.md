@@ -7,7 +7,6 @@
 | **版数** | 第2版 |
 | **作成日** | 2026年7月12日 |
 | **対象読者** | ICS セキュリティ研究者・エンジニア |
-| **目的** | 2016年ウクライナ変電所攻撃（Industroyer）の標的環境を仮想マシン上で再現する |
 
 ---
 
@@ -802,7 +801,7 @@ opc.close()
 5. Data Viewer で全タグの値がリアルタイム表示される
 ```
 
-DataHub は OPC DA ↔ OPC DA のトンネリング、Web 表示、DB 連携を単一アプリケーションで行えるため、SCADA の簡易模擬として適している。本田博士論文（p.22）でも、石油プラントの DMZ 構成で DataHub が使用された事例が報告されている。
+DataHub は OPC DA ↔ OPC DA のトンネリング、Web 表示、DB 連携を単一アプリケーションで行えるため、SCADA の簡易模擬として適している。
 
 ---
 
@@ -1275,16 +1274,6 @@ opc.close()
 | 3 | "Industroyer2: Industroyer reloaded" (2022) | ESET | https://www.welivesecurity.com/2022/04/12/industroyer2-industroyer-reloaded/ |
 | 4 | "Alert (AA23-059A): CRASHOVERRIDE" | CISA | https://www.cisa.gov/ |
 
-### OPC / ICS セキュリティ
-
-| # | 資料 | 備考 |
-|---|---|---|
-| 5 | 本田俊明 博士論文「産業用制御システムと OPC UA」 | 本ワークスペース所収。OPC UA の暗号化通信監視、DMZ 構成事例 |
-| 6 | 『OPC Unified Architecture』(Mahnke 他) | 本ワークスペース所収。OPC UA の設計思想、Classic → UA 移行 |
-| 7 | 「調査報告_OPC-Classicとは」 | 本ワークスペース所収。DCOM の問題点、DCOM Hardening の影響分析 |
-| 8 | NIST SP 800-82r3 "Guide to ICS Security" | ICS セキュリティガイドライン |
-| 9 | IEC 62443 シリーズ | 本ワークスペース所収。産業制御システムセキュリティの国際標準 |
-| 10 | Microsoft KB5004442 | DCOM Hardening のタイムラインと技術詳細 |
 
 ### ソフトウェア
 
