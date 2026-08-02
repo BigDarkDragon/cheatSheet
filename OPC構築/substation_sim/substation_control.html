@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>変電所 SCADA — Substation Control</title>
+  <meta charset="UTF-8">
+  <script src="/scripts/lispparse.js"></script>
+  <script src="/scripts/DHWebSocket.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', 'Meiryo', sans-serif;
+      background: #0c0c2a; color: #c8c8c8;
+      overflow-x: hidden; min-height: 100vh;
+    }
+
+    /* ===== ヘッダー ===== */
+    .header {
+      background: linear-gradient(180deg, #1a1a40 0%, #101030 100%);
+      border-bottom: 2px solid #00cc66;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 4px 20px; height: 36px;
+    }
+    .header-title { color: #00ddff; font-size: 14px; font-weight: bold; letter-spacing: 2px; }
+    .header-right { display: flex; align-items: center; gap: 15px; }
+    .header-time { color: #88aacc; font-size: 12px; font-family: monospace; }
+    .conn-badge { font-size: 10px; padding: 2px 10px; border-radius: 10px; font-weight: bold; }
+    .conn-ok { background: #003300; color: #00ff88; border: 1px solid #00aa44; }
+    .conn-ng { background: #330000; color: #ff4444; border: 1px solid #aa0000; }
+
+    /* ===== メインキャンバス ===== */
+    .canvas { position: relative; width: 100%; height: 580px; }
+
+    /* ===== バスバー ===== */
+    .busbar { position: absolute; height: 5px; border-radius: 2px; }
+    .bus-hv { background: #00cc66; top: 50px; left: 50px; right: 50px; }
+    .bus-lv { background: #ffaa00; top: 490px; left: 150px; right: 150px; }
+
+    .bus-label {
+      position: absolute; font-size: 11px; font-weight: bold;
+      padding: 2px 10px; border-radius: 3px;
+    }
+    .bus-label-hv { background: #003311; color: #00ff88; border: 1px solid #00aa44; top: 32px; left: 50px; }
+    .bus-label-lv { background: #332200; color: #ffcc44; border: 1px solid #aa7700; top: 498px; left: 150px; }
+
+    /* ===== 縦結線 (SVG line で描画) ===== */
+
+    /* ===== 機器ブロック ===== */
+    .equip {
+      position: absolute; text-align: center; width: 120px;
+    }
+    .equip-label { font-size: 10px; color: #5577aa; margin-top: 2px; }
+    .equip-name {
+      font-size: 12px; font-weight: bold; color: #00ddff;
+      background: #0a1830; border: 1px solid #1a3050;
+      padding: 1px 10px; border-radius: 4px; display: inline-block;
+    }
+
+    /* ===== 開閉器 SVG ===== */
+    .sw-svg { cursor: pointer; transition: transform 0.15s; display: block; margin: 0 auto; }
+    .sw-svg:hover { transform: scale(1.15); }
+
+    /* ===== 状態バッジ ===== */
+    .cb-badge {
+      font-size: 10px; font-weight: bold; padding: 1px 10px;
+      border-radius: 8px; display: inline-block; margin: 2px 0;
+    }
+    .badge-closed { background: #003311; color: #00ff88; border: 1px solid #00aa44; }
+    .badge-open { background: #330000; color: #ff4444; border: 1px solid #aa0000; animation: blink 0.8s infinite; }
+    @keyframes blink { 50% { opacity: 0.5; } }
+
+    .opcnt { font-size: 9px; color: #556677; }
+
+    /* ===== 制御ボタン ===== */
+    .ctrl-btns { display: flex; gap: 4px; justify-content: center; margin-top: 3px; }
+    .ctrl-btn {
+      font-size: 10px; font-weight: bold; padding: 3px 12px;
+      border: none; border-radius: 3px; cursor: pointer; transition: all 0.15s;
+    }
+    .ctrl-btn:hover { filter: brightness(1.3); }
+    .ctrl-open { background: #aa0000; color: #fff; }
+    .ctrl-close { background: #006633; color: #fff; }
+
+    /* ===== 計測パネル ===== */
+    .meas-panel {
+      position: absolute; background: #0a0a20;
+      border: 1px solid #1a2a40; border-radius: 6px;
+      padding: 10px 14px; min-width: 155px;
+    }
+    .meas-panel h3 {
+      font-size: 11px; color: #4477aa; text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 6px;
+      border-bottom: 1px solid #1a1a30; padding-bottom: 4px;
+    }
+    .m-row { display: flex; justify-content: space-between; padding: 2px 0; }
+    .m-lbl { color: #667788; font-size: 11px; }
+    .m-val { font-size: 14px; font-weight: bold; font-family: Consolas, monospace; min-width: 80px; text-align: right; }
+    .m-val.green { color: #00ff88; }
+    .m-val.amber { color: #ffaa00; }
+    .m-val.cyan { color: #00ccff; }
+
+    /* ===== ゲージ ===== */
+    .gauge-box { position: absolute; text-align: center; }
+    .gauge-val { font-size: 22px; font-weight: bold; color: #00ff88; margin-top: -5px; }
+    .gauge-lbl { font-size: 9px; color: #556677; }
+
+    /* ===== フッター ===== */
+    .footer {
+      background: #08081a; border-top: 1px solid #1a1a30;
+      height: 32px; display: flex; align-items: center;
+      padding: 0 15px;
+    }
+    .footer-tag { color: #3355aa; font-size: 10px; margin-right: 10px; font-weight: bold; }
+    .footer-msg { color: #556677; font-size: 10px; font-family: monospace; }
+    .footer-msg.ctl { color: #ffaa00; }
+
+    /* ===== ダイアログ ===== */
+    .dlg-bg {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); z-index: 100;
+      justify-content: center; align-items: center;
+    }
+    .dlg-bg.active { display: flex; }
+    .dlg-box {
+      background: #14142e; border: 2px solid #ff6600; border-radius: 10px;
+      padding: 25px 35px; text-align: center; min-width: 320px;
+    }
+    .dlg-box h3 { color: #ff8800; margin-bottom: 12px; }
+    .dlg-box p { color: #99aabb; margin-bottom: 20px; font-size: 14px; }
+    .dlg-box button {
+      padding: 8px 28px; border: none; border-radius: 5px;
+      font-size: 14px; font-weight: bold; cursor: pointer; margin: 0 6px;
+    }
+    .dlg-exec-open { background: #cc2200; color: #fff; }
+    .dlg-exec-close { background: #007744; color: #fff; }
+    .dlg-cancel { background: #333; color: #aaa; }
+  </style>
+</head>
+<body>
+
+<!-- ===== ヘッダー ===== -->
+<div class="header">
+  <span class="header-title">⚡ 変電所 監視制御 — SCADA / HMI</span>
+  <div class="header-right">
+    <span class="header-time" id="clock">--:--:--</span>
+    <span class="conn-badge conn-ng" id="connStatus">● 未接続</span>
+  </div>
+</div>
+
+<!-- ===== メイン SCADA キャンバス ===== -->
+<div class="canvas">
+
+  <!-- 結線図 (全体をSVGで描画) -->
+  <svg style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none;">
+    <!-- Bay1: 母線 → XSWI1 → XCBR1 → TR → LV母線 -->
+    <line x1="170" y1="55" x2="170" y2="90" stroke="#00cc66" stroke-width="3"/>
+    <line x1="170" y1="150" x2="170" y2="200" stroke="#00cc66" stroke-width="3"/>
+    <line x1="170" y1="270" x2="170" y2="340" stroke="#00cc66" stroke-width="3"/>
+    <line x1="170" y1="440" x2="170" y2="492" stroke="#ffaa00" stroke-width="3"/>
+
+    <!-- Bay2: 母線 → XCBR2 -->
+    <line x1="450" y1="55" x2="450" y2="90" stroke="#00cc66" stroke-width="3"/>
+    <line x1="450" y1="160" x2="450" y2="220" stroke="#00cc66" stroke-width="3"/>
+    <!-- Bay2: XCBR2 → 負荷 -->
+    <line x1="450" y1="220" x2="450" y2="260" stroke="#00cc66" stroke-width="3"/>
+    <rect x="430" y="260" width="40" height="30" fill="none" stroke="#557799" stroke-width="1.5" rx="3"/>
+    <text x="450" y="280" fill="#557799" font-size="10" text-anchor="middle">負荷</text>
+  </svg>
+
+  <!-- バスバー -->
+  <div class="busbar bus-hv"></div>
+  <div class="bus-label bus-label-hv">66kV 母線</div>
+  <div class="busbar bus-lv"></div>
+  <div class="bus-label bus-label-lv">6.6kV 母線</div>
+
+  <!-- ====== Bay 1: XSWI1 (断路器 89R) ====== -->
+  <div class="equip" style="left:110px; top:85px;">
+    <svg class="sw-svg" width="60" height="60" viewBox="0 0 60 60" onclick="confirmAction('XSWI1','TOGGLE')" style="pointer-events:auto;">
+      <line x1="30" y1="0" x2="30" y2="18" stroke="#00cc66" stroke-width="3"/>
+      <line x1="30" y1="42" x2="30" y2="60" stroke="#00cc66" stroke-width="3"/>
+      <line id="xswi1_blade" x1="30" y1="18" x2="30" y2="42" stroke="#00cc66" stroke-width="3"/>
+      <circle cx="30" cy="18" r="4" fill="none" stroke="#00cc66" stroke-width="2"/>
+    </svg>
+    <div class="cb-badge badge-closed" id="xswi1_badge">--</div>
+    <div class="equip-label">89R (XSWI1)</div>
+    <div class="ctrl-btns">
+      <button class="ctrl-btn ctrl-open" onclick="confirmAction('XSWI1','OPEN')">開放</button>
+      <button class="ctrl-btn ctrl-close" onclick="confirmAction('XSWI1','CLOSE')">投入</button>
+    </div>
+  </div>
+
+  <!-- ====== Bay 1: XCBR1 (遮断器 52R1) ====== -->
+  <div class="equip" style="left:110px; top:195px;">
+    <svg class="sw-svg" width="60" height="70" viewBox="0 0 60 70" onclick="confirmAction('XCBR1','TOGGLE')" style="pointer-events:auto;">
+      <line x1="30" y1="0" x2="30" y2="12" stroke="#00cc66" stroke-width="3"/>
+      <line x1="30" y1="58" x2="30" y2="70" stroke="#00cc66" stroke-width="3"/>
+      <rect x="16" y="12" width="28" height="46" fill="none" stroke="#00cc66" stroke-width="2.5" rx="3"/>
+      <line id="xcbr1_x1" x1="20" y1="16" x2="40" y2="54" stroke="#00cc66" stroke-width="2"/>
+      <line id="xcbr1_x2" x1="40" y1="16" x2="20" y2="54" stroke="#00cc66" stroke-width="2"/>
+    </svg>
+    <div class="cb-badge badge-closed" id="xcbr1_badge">--</div>
+    <div class="equip-label">52R1 (XCBR1)</div>
+    <div class="opcnt" id="xcbr1_opcnt">動作回数: --</div>
+    <div class="ctrl-btns">
+      <button class="ctrl-btn ctrl-open" onclick="confirmAction('XCBR1','OPEN')">開放</button>
+      <button class="ctrl-btn ctrl-close" onclick="confirmAction('XCBR1','CLOSE')">投入</button>
+    </div>
+  </div>
+
+  <!-- ====== Bay 1: 変圧器 TR ====== -->
+  <div class="equip" style="left:110px; top:340px; width:120px;">
+    <svg width="60" height="100" viewBox="0 0 60 100" style="display:block; margin:0 auto;">
+      <circle cx="30" cy="30" r="22" fill="none" stroke="#00cc66" stroke-width="2.5"/>
+      <circle cx="30" cy="68" r="22" fill="none" stroke="#ffaa00" stroke-width="2.5"/>
+      <text x="30" y="33" fill="#00cc66" font-size="10" text-anchor="middle" font-weight="bold">1次</text>
+      <text x="30" y="72" fill="#ffaa00" font-size="10" text-anchor="middle" font-weight="bold">2次</text>
+    </svg>
+    <div class="equip-label">TR 主変圧器</div>
+    <div style="font-size:9px; color:#445566;">66kV / 6.6kV</div>
+  </div>
+
+  <!-- ====== Bay 2: XCBR2 (遮断器 52R2) ====== -->
+  <div class="equip" style="left:390px; top:85px;">
+    <svg class="sw-svg" width="60" height="70" viewBox="0 0 60 70" onclick="confirmAction('XCBR2','TOGGLE')" style="pointer-events:auto;">
+      <line x1="30" y1="0" x2="30" y2="12" stroke="#00cc66" stroke-width="3"/>
+      <line x1="30" y1="58" x2="30" y2="70" stroke="#00cc66" stroke-width="3"/>
+      <rect x="16" y="12" width="28" height="46" fill="none" stroke="#00cc66" stroke-width="2.5" rx="3"/>
+      <line id="xcbr2_x1" x1="20" y1="16" x2="40" y2="54" stroke="#00cc66" stroke-width="2"/>
+      <line id="xcbr2_x2" x1="40" y1="16" x2="20" y2="54" stroke="#00cc66" stroke-width="2"/>
+    </svg>
+    <div class="cb-badge badge-closed" id="xcbr2_badge">--</div>
+    <div class="equip-label">52R2 (XCBR2)</div>
+    <div class="opcnt" id="xcbr2_opcnt">動作回数: --</div>
+    <div class="ctrl-btns">
+      <button class="ctrl-btn ctrl-open" onclick="confirmAction('XCBR2','OPEN')">開放</button>
+      <button class="ctrl-btn ctrl-close" onclick="confirmAction('XCBR2','CLOSE')">投入</button>
+    </div>
+  </div>
+
+  <!-- ====== 計測パネル: 電流 ====== -->
+  <div class="meas-panel" style="left:600px; top:40px;">
+    <h3>⚡ 電流 (CT)</h3>
+    <div class="m-row"><span class="m-lbl">A相</span><span class="m-val green" id="ia">-- A</span></div>
+    <div class="m-row"><span class="m-lbl">B相</span><span class="m-val green" id="ib">-- A</span></div>
+    <div class="m-row"><span class="m-lbl">C相</span><span class="m-val green" id="ic">-- A</span></div>
+  </div>
+
+  <!-- ====== 計測パネル: 電圧 ====== -->
+  <div class="meas-panel" style="left:600px; top:185px;">
+    <h3>📐 電圧 (VT)</h3>
+    <div class="m-row"><span class="m-lbl">A相</span><span class="m-val amber" id="va">-- kV</span></div>
+    <div class="m-row"><span class="m-lbl">B相</span><span class="m-val amber" id="vb">-- kV</span></div>
+    <div class="m-row"><span class="m-lbl">C相</span><span class="m-val amber" id="vc">-- kV</span></div>
+  </div>
+
+  <!-- ====== 計測パネル: 周波数 ====== -->
+  <div class="meas-panel" style="left:600px; top:325px;">
+    <h3>〜 系統情報</h3>
+    <div class="m-row"><span class="m-lbl">周波数</span><span class="m-val cyan" id="hz">-- Hz</span></div>
+  </div>
+
+  <!-- ====== アナログメーター ====== -->
+  <div class="gauge-box" style="left:790px; top:40px;">
+    <svg viewBox="0 0 160 100" width="170" height="105">
+      <path d="M 20 90 A 65 65 0 0 1 140 90" fill="none" stroke="#1a2a3a" stroke-width="12" stroke-linecap="round"/>
+      <path id="gaugeArc" d="M 20 90 A 65 65 0 0 1 80 25" fill="none" stroke="#00cc66" stroke-width="10" stroke-linecap="round"/>
+      <line id="gaugeNeedle" x1="80" y1="90" x2="80" y2="30" stroke="#ff4444" stroke-width="2" transform="rotate(-90, 80, 90)"/>
+      <text x="20" y="98" fill="#556" font-size="9">0</text>
+      <text x="73" y="16" fill="#556" font-size="9">250</text>
+      <text x="128" y="98" fill="#556" font-size="9">500</text>
+    </svg>
+    <div class="gauge-val" id="gaugeValue">-- A</div>
+    <div class="gauge-lbl">A相 電流計</div>
+  </div>
+
+</div>
+
+<!-- ===== フッター ===== -->
+<div class="footer">
+  <span class="footer-tag">LOG</span>
+  <span class="footer-msg" id="footerLog">System ready</span>
+</div>
+
+<!-- ===== ダイアログ ===== -->
+<div class="dlg-bg" id="dlgOverlay">
+  <div class="dlg-box">
+    <h3>⚠ 操作確認</h3>
+    <p id="dlgMsg">--</p>
+    <button class="dlg-exec-open" id="dlgExec" onclick="executeAction()">実行</button>
+    <button class="dlg-cancel" onclick="cancelAction()">キャンセル</button>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  //  DataHub WebSocket
+  // ============================================================
+  var wsHost = window.location.hostname || "localhost";
+  var wsPort = window.location.port || "80";
+  var dhws = new DataHubWebSocket(wsHost, wsPort, false);
+  var pendingAction = null;
+
+  // ============================================================
+  //  ポイント名
+  // ============================================================
+  var BASE = "IEC61850_Ch1.IED1.IED1CBIED/";
+  var POINTS = {
+    xcbr1_pos:  BASE + "XCBR1$ST$Pos$stVal",
+    xcbr2_pos:  BASE + "XCBR2$ST$Pos$stVal",
+    xswi1_pos:  BASE + "XSWI1$ST$Pos$stVal",
+    xcbr1_cnt:  BASE + "XCBR1$ST$OpCnt$stVal",
+    xcbr2_cnt:  BASE + "XCBR2$ST$OpCnt$stVal",
+    ia:         BASE + "MMXU1$MX$A$phsA$cVal$mag$f",
+    ib:         BASE + "MMXU1$MX$A$phsB$cVal$mag$f",
+    ic:         BASE + "MMXU1$MX$A$phsC$cVal$mag$f",
+    va:         BASE + "MMXU1$MX$PhV$phsA$cVal$mag$f",
+    vb:         BASE + "MMXU1$MX$PhV$phsB$cVal$mag$f",
+    vc:         BASE + "MMXU1$MX$PhV$phsC$cVal$mag$f",
+    hz:         BASE + "MMXU1$MX$Hz$mag$f",
+    xcbr1_ctrl: BASE + "XCBR1$CF$Pos$PosCmd",
+    xcbr2_ctrl: BASE + "XCBR2$CF$Pos$PosCmd",
+    xswi1_ctrl: BASE + "XSWI1$CF$Pos$PosCmd"
+  };
+  var pointToUI = {};
+  for (var key in POINTS) { pointToUI[POINTS[key]] = key; }
+
+  // ============================================================
+  //  表示
+  // ============================================================
+  function fmt(v) { var f = parseFloat(v); return isNaN(f) ? '--' : f.toFixed(1); }
+  function fmtHz(v) { var f = parseFloat(v); return isNaN(f) ? '--' : f.toFixed(3); }
+
+  function updateSwitch(svgParent, badgeId, value, isCB) {
+    var v = parseInt(value);
+    var badge = document.getElementById(badgeId);
+    if (!badge) return;
+    var svg = badge.parentElement.querySelector('svg');
+    if (!svg) return;
+
+    var color = (v === 2) ? '#00cc66' : '#ff3344';
+    svg.querySelectorAll('line, rect, circle').forEach(function(el) {
+      el.setAttribute('stroke', color);
+    });
+
+    if (v === 2) {
+      badge.textContent = '投入';
+      badge.className = 'cb-badge badge-closed';
+      if (isCB) {
+        var x1 = svg.querySelector('[id$="_x1"]');
+        var x2 = svg.querySelector('[id$="_x2"]');
+        if (x1) x1.style.display = '';
+        if (x2) x2.style.display = '';
+      } else {
+        var blade = svg.querySelector('[id$="_blade"]');
+        if (blade) { blade.setAttribute('x2', '30'); blade.setAttribute('y2', '42'); }
+      }
+    } else if (v === 1) {
+      badge.textContent = '開放';
+      badge.className = 'cb-badge badge-open';
+      if (isCB) {
+        var x1 = svg.querySelector('[id$="_x1"]');
+        var x2 = svg.querySelector('[id$="_x2"]');
+        if (x1) x1.style.display = 'none';
+        if (x2) x2.style.display = 'none';
+      } else {
+        var blade = svg.querySelector('[id$="_blade"]');
+        if (blade) { blade.setAttribute('x2', '50'); blade.setAttribute('y2', '25'); }
+      }
+    }
+  }
+
+  function updateGauge(val) {
+    var v = parseFloat(val);
+    if (isNaN(v)) return;
+    var angle = Math.max(-90, Math.min(90, (v / 500) * 180 - 90));
+    var needle = document.getElementById('gaugeNeedle');
+    if (needle) needle.setAttribute('transform', 'rotate(' + angle + ', 80, 90)');
+    var frac = Math.max(0, Math.min(1, v / 500));
+    var ea = Math.PI * (1 - frac);
+    var ex = 80 + 65 * Math.cos(ea), ey = 90 - 65 * Math.sin(ea);
+    var arc = document.getElementById('gaugeArc');
+    if (arc) arc.setAttribute('d', 'M 20 90 A 65 65 0 ' + (frac > 0.5 ? 1 : 0) + ' 1 ' + ex.toFixed(1) + ' ' + ey.toFixed(1));
+    document.getElementById('gaugeValue').textContent = fmt(v) + ' A';
+  }
+
+  function updateUI(k, v) {
+    switch (k) {
+      case 'xcbr1_pos': updateSwitch(null, 'xcbr1_badge', v, true); break;
+      case 'xcbr2_pos': updateSwitch(null, 'xcbr2_badge', v, true); break;
+      case 'xswi1_pos': updateSwitch(null, 'xswi1_badge', v, false); break;
+      case 'xcbr1_cnt': document.getElementById('xcbr1_opcnt').textContent = '動作回数: ' + v; break;
+      case 'xcbr2_cnt': document.getElementById('xcbr2_opcnt').textContent = '動作回数: ' + v; break;
+      case 'ia': document.getElementById('ia').textContent = fmt(v) + ' A'; updateGauge(v); break;
+      case 'ib': document.getElementById('ib').textContent = fmt(v) + ' A'; break;
+      case 'ic': document.getElementById('ic').textContent = fmt(v) + ' A'; break;
+      case 'va': document.getElementById('va').textContent = fmt(v) + ' kV'; break;
+      case 'vb': document.getElementById('vb').textContent = fmt(v) + ' kV'; break;
+      case 'vc': document.getElementById('vc').textContent = fmt(v) + ' kV'; break;
+      case 'hz': document.getElementById('hz').textContent = fmtHz(v) + ' Hz'; break;
+    }
+  }
+
+  // ============================================================
+  //  WebSocket
+  // ============================================================
+  dhws.onConnectionSuccess = function(h, p) {
+    document.getElementById('connStatus').textContent = '● 接続中';
+    document.getElementById('connStatus').className = 'conn-badge conn-ok';
+    addLog('DataHub 接続完了');
+    for (var k in POINTS) { if (k.indexOf('_ctrl') === -1) dhws.registerPoint(POINTS[k]); }
+    dhws.registerDomain("IEC61850_Ch1");
+  };
+  dhws.onConnectionFailure = function() {
+    document.getElementById('connStatus').textContent = '● 未接続';
+    document.getElementById('connStatus').className = 'conn-badge conn-ng';
+  };
+  dhws.addPointHandler("*", function(args) {
+    var uiKey = pointToUI[args[1]];
+    if (uiKey) updateUI(uiKey, args[3]);
+  });
+  dhws.handlers["error"] = function(a) { addLog('Error: ' + a.slice(1).join(' ')); };
+  dhws.handlers["success"] = function() {};
+  dhws.handlers["AsyncMessage"] = function() {};
+  dhws.handlers["domains"] = function() {};
+  dhws.connect(wsHost, wsPort, false);
+
+  // ============================================================
+  //  操作
+  // ============================================================
+  function confirmAction(dev, act) {
+    if (act === 'TOGGLE') {
+      var b = document.getElementById(dev.toLowerCase() + '_badge');
+      act = (b && b.textContent === '投入') ? 'OPEN' : 'CLOSE';
+    }
+    pendingAction = { device: dev, action: act };
+    var lbl = (act === 'OPEN') ? '開放' : '投入';
+    document.getElementById('dlgMsg').textContent = dev + ' を【' + lbl + '】します。よろしいですか？';
+    var btn = document.getElementById('dlgExec');
+    btn.className = (act === 'OPEN') ? 'dlg-exec-open' : 'dlg-exec-close';
+    btn.textContent = lbl + ' 実行';
+    document.getElementById('dlgOverlay').classList.add('active');
+  }
+  function cancelAction() {
+    pendingAction = null;
+    document.getElementById('dlgOverlay').classList.remove('active');
+  }
+  function executeAction() {
+    if (!pendingAction) return;
+    var val = (pendingAction.action === 'OPEN') ? 1 : 2;
+    var pt = POINTS[pendingAction.device.toLowerCase() + '_ctrl'];
+    if (pt) { dhws.write(pt, val); addLog(pendingAction.device + ' ' + pendingAction.action + ' 指令送信', true); }
+    document.getElementById('dlgOverlay').classList.remove('active');
+    pendingAction = null;
+  }
+
+  // ============================================================
+  //  ログ & 時計
+  // ============================================================
+  function addLog(msg, ctl) {
+    var el = document.getElementById('footerLog');
+    el.textContent = new Date().toLocaleTimeString() + '  ' + msg;
+    el.className = ctl ? 'footer-msg ctl' : 'footer-msg';
+  }
+  setInterval(function() {
+    var n = new Date();
+    document.getElementById('clock').textContent =
+      n.toLocaleDateString('ja-JP') + ' ' + n.toLocaleTimeString('ja-JP');
+  }, 1000);
+</script>
+</body>
+</html>
