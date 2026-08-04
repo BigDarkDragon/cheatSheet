@@ -27,8 +27,22 @@
     .conn-ok { background: #003300; color: #00ff88; border: 1px solid #00aa44; }
     .conn-ng { background: #330000; color: #ff4444; border: 1px solid #aa0000; }
 
+    /* ===== 設定バー ===== */
+    .config-bar {
+      background: #0d0d20; padding: 4px 15px; border-bottom: 1px solid #1a1a30;
+      display: flex; gap: 10px; align-items: center;
+    }
+    .config-bar input {
+      background: #1a1a30; color: #ccc; border: 1px solid #334; padding: 2px 6px;
+      font-family: monospace; font-size: 11px; width: 300px;
+    }
+    .config-bar button {
+      background: #224488; color: #fff; border: none; padding: 2px 10px;
+      font-size: 11px; border-radius: 3px; cursor: pointer;
+    }
+
     /* ===== メインキャンバス ===== */
-    .canvas { position: relative; width: 100%; height: 580px; }
+    .canvas { position: relative; width: 100%; height: 550px; }
 
     /* ===== バスバー ===== */
     .busbar { position: absolute; height: 5px; border-radius: 2px; }
@@ -144,6 +158,14 @@
     <span class="header-time" id="clock">--:--:--</span>
     <span class="conn-badge conn-ng" id="connStatus">● 未接続</span>
   </div>
+</div>
+
+<!-- ===== 設定バー ===== -->
+<div class="config-bar">
+  <span style="color:#667788; font-size:11px;">ドメインプレフィックス:</span>
+  <input type="text" id="cfgDomain" value="IEC61850_Ch1.IED1.IED1CBIED/">
+  <button onclick="reconnectWithPrefix()">適用して再接続</button>
+  <button onclick="checkDataHubPoints()">ポイント一覧を出力 (F12)</button>
 </div>
 
 <!-- ===== メイン SCADA キャンバス ===== -->
@@ -337,9 +359,10 @@
     if (!svg) return;
 
     var color = (v === 2) ? '#00cc66' : '#ff3344';
-    svg.querySelectorAll('line, rect, circle').forEach(function(el) {
-      el.setAttribute('stroke', color);
-    });
+    var els = svg.querySelectorAll('line, rect, circle');
+    for (var i = 0; i < els.length; i++) {
+      els[i].setAttribute('stroke', color);
+    }
 
     if (v === 2) {
       badge.textContent = '投入';
@@ -422,6 +445,48 @@
   dhws.handlers["AsyncMessage"] = function() {};
   dhws.handlers["domains"] = function() {};
   dhws.connect(wsHost, wsPort, false);
+
+  // ============================================================
+  //  プレフィックス変更と再接続
+  // ============================================================
+  function reconnectWithPrefix() {
+    var newPrefix = document.getElementById('cfgDomain').value;
+    if (!newPrefix) return;
+    
+    // 現在のプレフィックス長を取得
+    var oldPrefix = BASE;
+    BASE = newPrefix;
+    
+    // POINTS辞書のプレフィックスを更新
+    for (var key in POINTS) {
+      POINTS[key] = POINTS[key].replace(oldPrefix, BASE);
+    }
+    
+    // 逆引きマップを再構築
+    pointToUI = {};
+    for (var key in POINTS) { pointToUI[POINTS[key]] = key; }
+    
+    addLog('プレフィックス変更: ' + BASE, true);
+    dhws.disconnect();
+    setTimeout(function() {
+      dhws.connect(wsHost, wsPort, false);
+    }, 500);
+  }
+
+  function checkDataHubPoints() {
+    addLog('F12コンソールに現在のDataHubドメインを出力します', true);
+    console.log("=== 登録先ポイント一覧 ===");
+    for (var key in POINTS) {
+      console.log(" " + key + ": " + POINTS[key]);
+    }
+    console.log("=== DataHubから取得したドメイン一覧 ===");
+    dhws.send("(domains)");
+  }
+  dhws.handlers["domains"] = function(args) {
+    var list = args.slice(1).join(', ');
+    addLog('ドメイン: ' + list);
+    console.log("DOMAINS:", args);
+  };
 
   // ============================================================
   //  操作
