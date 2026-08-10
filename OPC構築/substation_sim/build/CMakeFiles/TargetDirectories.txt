@@ -1,3 +1,0 @@
-/home/kali/Desktop/substation_sim/build/CMakeFiles/substation_server.dir
-/home/kali/Desktop/substation_sim/build/CMakeFiles/edit_cache.dir
-/home/kali/Desktop/substation_sim/build/CMakeFiles/rebuild_cache.dir
