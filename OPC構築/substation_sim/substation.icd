@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  substation.icd  (v6 — 4遮断器同居版)
+  =============================================
+  1プロセスで4フィーダー分の機器を模擬
+
+  構成:
+    XCBR1〜XCBR4 : 遮断器 ×4 (各フィーダーの 52R)
+    XSWI1〜XSWI4 : 断路器 ×4 (各フィーダーの 89R)
+    MMXU1〜MMXU4 : 計測   ×4 (各フィーダーの電流・電圧・周波数)
+-->
+<SCL xmlns="http://www.iec.ch/61850/2003/SCL"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <Header id="Substation_IED" version="1.0" revision="6" toolID="manual"/>
+
+  <IED name="IED1" manufacturer="Simulator" type="SubstationIED">
+    <Services>
+      <DynAssociation/>
+      <GetDirectory/>
+      <GetDataObjectDefinition/>
+      <GetDataSetValue/>
+      <DataSetDirectory/>
+      <ReadWrite/>
+      <GetCBValues/>
+      <ConfLNs fixPrefix="true" fixLnInst="true"/>
+    </Services>
+
+    <AccessPoint name="AP1">
+      <Server>
+        <Authentication/>
+        <LDevice inst="CBIED">
+
+          <LN0 lnClass="LLN0" lnType="LLN0_Type" inst=""/>
+
+          <!-- フィーダー1号 -->
+          <LN lnClass="XCBR" lnType="XCBR_Type" inst="1" prefix=""/>
+          <LN lnClass="XSWI" lnType="XSWI_Type" inst="1" prefix=""/>
+          <LN lnClass="MMXU" lnType="MMXU_Type" inst="1" prefix=""/>
+
+          <!-- フィーダー2号 -->
+          <LN lnClass="XCBR" lnType="XCBR_Type" inst="2" prefix=""/>
+          <LN lnClass="XSWI" lnType="XSWI_Type" inst="2" prefix=""/>
+          <LN lnClass="MMXU" lnType="MMXU_Type" inst="2" prefix=""/>
+
+          <!-- フィーダー3号 -->
+          <LN lnClass="XCBR" lnType="XCBR_Type" inst="3" prefix=""/>
+          <LN lnClass="XSWI" lnType="XSWI_Type" inst="3" prefix=""/>
+          <LN lnClass="MMXU" lnType="MMXU_Type" inst="3" prefix=""/>
+
+          <!-- フィーダー4号 -->
+          <LN lnClass="XCBR" lnType="XCBR_Type" inst="4" prefix=""/>
+          <LN lnClass="XSWI" lnType="XSWI_Type" inst="4" prefix=""/>
+          <LN lnClass="MMXU" lnType="MMXU_Type" inst="4" prefix=""/>
+
+        </LDevice>
+      </Server>
+    </AccessPoint>
+  </IED>
+
+  <DataTypeTemplates>
+
+    <LNodeType id="LLN0_Type" lnClass="LLN0">
+      <DO name="Mod"    type="ENC_Mod"/>
+      <DO name="Beh"    type="ENS_Beh"/>
+      <DO name="Health" type="ENS_Health"/>
+      <DO name="NamPlt" type="LPL_NamPlt"/>
+    </LNodeType>
+
+    <LNodeType id="XCBR_Type" lnClass="XCBR">
+      <DO name="Mod"    type="ENC_Mod"/>
+      <DO name="Beh"    type="ENS_Beh"/>
+      <DO name="Health" type="ENS_Health"/>
+      <DO name="Pos"    type="DPC_Pos"/>
+      <DO name="OpCnt"  type="INS_OpCnt"/>
+      <DO name="CBOpCap" type="INS_General"/>
+    </LNodeType>
+
+    <LNodeType id="XSWI_Type" lnClass="XSWI">
+      <DO name="Mod"    type="ENC_Mod"/>
+      <DO name="Beh"    type="ENS_Beh"/>
+      <DO name="Health" type="ENS_Health"/>
+      <DO name="Pos"    type="DPC_Pos"/>
+    </LNodeType>
+
+    <LNodeType id="MMXU_Type" lnClass="MMXU">
+      <DO name="Mod"    type="ENC_Mod"/>
+      <DO name="Beh"    type="ENS_Beh"/>
+      <DO name="Health" type="ENS_Health"/>
+      <DO name="A"      type="WYE_Current"/>
+      <DO name="PhV"    type="WYE_Voltage"/>
+      <DO name="Hz"     type="MV_Hz"/>
+    </LNodeType>
+
+    <DOType id="ENC_Mod" cdc="ENC">
+      <DA name="stVal"    fc="ST" bType="Enum" type="BehaviourModeKind" dchg="true"/>
+      <DA name="q"        fc="ST" bType="Quality" qchg="true"/>
+      <DA name="t"        fc="ST" bType="Timestamp"/>
+      <DA name="ctlModel" fc="CF" bType="Enum" type="CtlModelKind"/>
+    </DOType>
+
+    <DOType id="ENS_Beh" cdc="ENS">
+      <DA name="stVal" fc="ST" bType="Enum" type="BehaviourModeKind" dchg="true"/>
+      <DA name="q"     fc="ST" bType="Quality" qchg="true"/>
+      <DA name="t"     fc="ST" bType="Timestamp"/>
+    </DOType>
+
+    <DOType id="ENS_Health" cdc="ENS">
+      <DA name="stVal" fc="ST" bType="Enum" type="HealthKind" dchg="true"/>
+      <DA name="q"     fc="ST" bType="Quality" qchg="true"/>
+      <DA name="t"     fc="ST" bType="Timestamp"/>
+    </DOType>
+
+    <DOType id="DPC_Pos" cdc="DPC">
+      <DA name="stVal"    fc="ST" bType="Dbpos" dchg="true"/>
+      <DA name="q"        fc="ST" bType="Quality" qchg="true"/>
+      <DA name="t"        fc="ST" bType="Timestamp"/>
+      <DA name="Oper"     fc="CO" bType="Struct" type="DPC_Oper"/>
+      <DA name="ctlModel" fc="CF" bType="Enum" type="CtlModelKind"/>
+      <DA name="PosCmd"   fc="CF" bType="INT32" dchg="true"/>
+    </DOType>
+
+    <DOType id="INS_OpCnt" cdc="INS">
+      <DA name="stVal" fc="ST" bType="INT32" dchg="true"/>
+      <DA name="q"     fc="ST" bType="Quality" qchg="true"/>
+      <DA name="t"     fc="ST" bType="Timestamp"/>
+    </DOType>
+
+    <DOType id="INS_General" cdc="INS">
+      <DA name="stVal" fc="ST" bType="INT32" dchg="true"/>
+      <DA name="q"     fc="ST" bType="Quality" qchg="true"/>
+      <DA name="t"     fc="ST" bType="Timestamp"/>
+    </DOType>
+
+    <DOType id="LPL_NamPlt" cdc="LPL">
+      <DA name="vendor"  fc="DC" bType="VisString255"/>
+      <DA name="swRev"   fc="DC" bType="VisString255"/>
+      <DA name="d"       fc="DC" bType="VisString255"/>
+    </DOType>
+
+    <DOType id="WYE_Current" cdc="WYE">
+      <SDO name="phsA" type="CMV_A"/>
+      <SDO name="phsB" type="CMV_A"/>
+      <SDO name="phsC" type="CMV_A"/>
+    </DOType>
+
+    <DOType id="WYE_Voltage" cdc="WYE">
+      <SDO name="phsA" type="CMV_V"/>
+      <SDO name="phsB" type="CMV_V"/>
+      <SDO name="phsC" type="CMV_V"/>
+    </DOType>
+
+    <DOType id="CMV_A" cdc="CMV">
+      <DA name="cVal" fc="MX" bType="Struct" type="Vector"/>
+      <DA name="q"    fc="MX" bType="Quality" qchg="true"/>
+      <DA name="t"    fc="MX" bType="Timestamp"/>
+    </DOType>
+
+    <DOType id="CMV_V" cdc="CMV">
+      <DA name="cVal" fc="MX" bType="Struct" type="Vector"/>
+      <DA name="q"    fc="MX" bType="Quality" qchg="true"/>
+      <DA name="t"    fc="MX" bType="Timestamp"/>
+    </DOType>
+
+    <DOType id="MV_Hz" cdc="MV">
+      <DA name="mag" fc="MX" bType="Struct" type="AnalogueValue"/>
+      <DA name="q"   fc="MX" bType="Quality" qchg="true"/>
+      <DA name="t"   fc="MX" bType="Timestamp"/>
+    </DOType>
+
+    <DAType id="DPC_Oper">
+      <BDA name="ctlVal" bType="BOOLEAN"/>
+      <BDA name="origin" bType="Struct" type="Originator"/>
+      <BDA name="ctlNum" bType="INT8U"/>
+      <BDA name="T"      bType="Timestamp"/>
+      <BDA name="Test"   bType="BOOLEAN"/>
+      <BDA name="Check"  bType="Check"/>
+    </DAType>
+
+    <DAType id="Vector">
+      <BDA name="mag" bType="Struct" type="AnalogueValue"/>
+      <BDA name="ang" bType="Struct" type="AnalogueValue"/>
+    </DAType>
+
+    <DAType id="AnalogueValue">
+      <BDA name="f" bType="FLOAT32"/>
+    </DAType>
+
+    <DAType id="Originator">
+      <BDA name="orCat"   bType="Enum" type="OrCatKind"/>
+      <BDA name="orIdent" bType="Octet64"/>
+    </DAType>
+
+    <EnumType id="BehaviourModeKind">
+      <EnumVal ord="1">on</EnumVal>
+      <EnumVal ord="2">blocked</EnumVal>
+      <EnumVal ord="3">test</EnumVal>
+      <EnumVal ord="4">test/blocked</EnumVal>
+      <EnumVal ord="5">off</EnumVal>
+    </EnumType>
+
+    <EnumType id="HealthKind">
+      <EnumVal ord="1">Ok</EnumVal>
+      <EnumVal ord="2">Warning</EnumVal>
+      <EnumVal ord="3">Alarm</EnumVal>
+    </EnumType>
+
+    <EnumType id="CtlModelKind">
+      <EnumVal ord="0">status-only</EnumVal>
+      <EnumVal ord="1">direct-with-normal-security</EnumVal>
+      <EnumVal ord="2">sbo-with-normal-security</EnumVal>
+      <EnumVal ord="3">direct-with-enhanced-security</EnumVal>
+      <EnumVal ord="4">sbo-with-enhanced-security</EnumVal>
+    </EnumType>
+
+    <EnumType id="OrCatKind">
+      <EnumVal ord="0">not-supported</EnumVal>
+      <EnumVal ord="1">bay-control</EnumVal>
+      <EnumVal ord="2">station-control</EnumVal>
+      <EnumVal ord="3">remote-control</EnumVal>
+      <EnumVal ord="4">automatic-bay</EnumVal>
+      <EnumVal ord="5">automatic-station</EnumVal>
+      <EnumVal ord="6">automatic-remote</EnumVal>
+      <EnumVal ord="7">maintenance</EnumVal>
+      <EnumVal ord="8">process</EnumVal>
+    </EnumType>
+
+  </DataTypeTemplates>
+</SCL>
